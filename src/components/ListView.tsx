@@ -1,0 +1,149 @@
+'use client'
+
+import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
+import type { School, SortDir, SortKey } from '@/lib/types'
+
+const COLOR_DOT: Record<string, string> = {
+  green: 'bg-green-500',
+  amber: 'bg-amber-500',
+  orange: 'bg-orange-500',
+  grey: 'bg-slate-400',
+}
+
+function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
+  if (!active) return <ChevronsUpDown size={13} className="text-slate-300" />
+  return dir === 'asc' ? (
+    <ChevronUp size={13} className="text-slate-600" />
+  ) : (
+    <ChevronDown size={13} className="text-slate-600" />
+  )
+}
+
+function Th({
+  label,
+  sortKey,
+  currentKey,
+  currentDir,
+  onSort,
+  className,
+}: {
+  label: string
+  sortKey: SortKey
+  currentKey: SortKey
+  currentDir: SortDir
+  onSort: (k: SortKey) => void
+  className?: string
+}) {
+  return (
+    <th
+      className={`px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide cursor-pointer select-none hover:text-slate-800 transition-colors ${className ?? ''}`}
+      onClick={() => onSort(sortKey)}
+    >
+      <span className="flex items-center gap-1">
+        {label}
+        <SortIcon active={currentKey === sortKey} dir={currentDir} />
+      </span>
+    </th>
+  )
+}
+
+export default function ListView({
+  schools,
+  selected,
+  onSelect,
+  sortKey,
+  sortDir,
+  onSort,
+}: {
+  schools: School[]
+  selected: School | null
+  onSelect: (s: School | null) => void
+  sortKey: SortKey
+  sortDir: SortDir
+  onSort: (k: SortKey) => void
+}) {
+  return (
+    <div className="h-full overflow-y-auto bg-slate-50">
+      <table className="w-full border-collapse">
+        <thead className="sticky top-0 z-10 bg-white border-b border-slate-200">
+          <tr>
+            <Th label="School" sortKey="name" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-auto" />
+            <Th label="Region" sortKey="region" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-28 hidden sm:table-cell" />
+            <Th label="Access" sortKey="pr_color" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-36" />
+            <Th label="Tier" sortKey="quality_stars" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-20" />
+            <th className="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-14">GEP</th>
+            <th className="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-28 hidden md:table-cell">
+              Avg PSF 1km
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {schools.map((school, i) => {
+            const isSelected = selected?.id === school.id
+            const shortName = school.name
+              .replace(/ PRIMARY SCHOOL$/, '')
+              .replace(/ SCHOOL$/, '')
+              .replace(/ \(PRIMARY\)$/, '')
+            return (
+              <tr
+                key={school.id}
+                onClick={() => onSelect(isSelected ? null : school)}
+                className={`cursor-pointer border-b border-slate-100 transition-colors ${
+                  isSelected
+                    ? 'bg-slate-800 text-white'
+                    : i % 2 === 0
+                    ? 'bg-white hover:bg-slate-50'
+                    : 'bg-slate-50 hover:bg-slate-100'
+                }`}
+              >
+                <td className="px-4 py-3">
+                  <div className="flex flex-col">
+                    <span className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-slate-800'}`}>
+                      {shortName}
+                    </span>
+                    <span className={`text-xs sm:hidden mt-0.5 ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>
+                      {school.region}
+                    </span>
+                  </div>
+                </td>
+                <td className={`px-4 py-3 text-sm hidden sm:table-cell ${isSelected ? 'text-slate-200' : 'text-slate-600'}`}>
+                  {school.region}
+                </td>
+                <td className="px-4 py-3">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium">
+                    <span
+                      className={`w-2 h-2 rounded-full shrink-0 ${COLOR_DOT[school.pr_color]}`}
+                    />
+                    <span className={isSelected ? 'text-slate-100' : 'text-slate-700'}>
+                      {school.pr_label}
+                    </span>
+                  </span>
+                </td>
+                <td className={`px-4 py-3 text-sm ${isSelected ? 'text-amber-300' : 'text-amber-400'}`}>
+                  {'★'.repeat(school.quality_stars)}
+                </td>
+                <td className={`px-4 py-3 text-sm ${isSelected ? 'text-slate-200' : 'text-slate-500'}`}>
+                  {school.is_gep_centre ? '✓' : ''}
+                </td>
+                <td className={`px-4 py-3 text-sm hidden md:table-cell ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>
+                  —
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+
+      {schools.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-24 text-slate-400">
+          <p className="text-base font-medium">No schools match</p>
+          <p className="text-sm mt-1">Try adjusting the filters above</p>
+        </div>
+      )}
+
+      <div className="py-4 text-center text-xs text-slate-400">
+        {schools.length} school{schools.length !== 1 ? 's' : ''}
+      </div>
+    </div>
+  )
+}

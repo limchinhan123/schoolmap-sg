@@ -1,27 +1,71 @@
+@import 'mapbox-gl/dist/mapbox-gl.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+html, body, #__next {
+  height: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* School pins — rendered as React Markers in MapView */
+.school-pin {
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 2px solid rgba(255,255,255,0.9);
+  box-sizing: content-box;
+}
+.school-pin.limited {
+  border: none;
+}
+.school-pin:hover {
+  transform: scale(1.25);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  z-index: 10;
+}
+.school-pin.selected {
+  transform: scale(1.35);
+  box-shadow: 0 0 0 3px white, 0 0 0 5px rgba(0,0,0,0.5);
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* Sizes */
+.school-pin.large { width: 18px; height: 18px; }
+.school-pin.small { width: 10px; height: 10px; border-width: 1.5px; }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Colors */
+.school-pin.pr-green  { background-color: #22c55e; }
+.school-pin.pr-amber  { background-color: #f59e0b; }
+.school-pin.pr-orange { background-color: #f97316; }
+.school-pin.pr-grey   { background-color: #94a3b8; }
+
+/* Double-ring for limited data — dashed CSS borders render as starbursts on small circles */
+.school-pin.pr-green.limited  { box-shadow: 0 0 0 2.5px #fff, 0 0 0 5px #22c55e, 0 1px 4px rgba(0,0,0,0.25); }
+.school-pin.pr-amber.limited  { box-shadow: 0 0 0 2.5px #fff, 0 0 0 5px #f59e0b, 0 1px 4px rgba(0,0,0,0.25); }
+.school-pin.pr-orange.limited { box-shadow: 0 0 0 2.5px #fff, 0 0 0 5px #f97316, 0 1px 4px rgba(0,0,0,0.25); }
+.school-pin.pr-grey.limited   { box-shadow: 0 0 0 2.5px #fff, 0 0 0 5px #94a3b8, 0 1px 4px rgba(0,0,0,0.25); }
+
+/* Mapbox cluster markers */
+.cluster-marker {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: white;
+  border: 2.5px solid rgba(255,255,255,0.9);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.15s ease;
 }
+.cluster-marker:hover { transform: scale(1.1); }
+.cluster-marker.cl-green  { background-color: #22c55e; }
+.cluster-marker.cl-amber  { background-color: #f59e0b; }
+.cluster-marker.cl-orange { background-color: #f97316; }
+.cluster-marker.cl-grey   { background-color: #94a3b8; }
+
+/* Slide panel transition */
+.panel-enter { transform: translateY(100%); }
+.panel-visible { transform: translateY(0); }

@@ -18,7 +18,7 @@ import { createClient } from '@supabase/supabase-js'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type PRColor = 'green' | 'amber' | 'orange' | 'red' | 'grey'
+type PRColor = 'green' | 'amber' | 'orange' | 'grey'
 
 interface BallotYear {
   year: number
@@ -64,6 +64,10 @@ function computePRAccessibility(ballotData: BallotYear[]): PRResult {
 
   const limited = ballotData.length < 3
 
+  // Sort descending so sorted[0] is always the most recent year
+  const sorted = [...ballotData].sort((a, b) => b.year - a.year)
+  const mostRecent = sorted[0]
+
   // PR<1, PR1-2, PR>2 in any year — PRs literally reached the ballot queue
   // PR>2 is the strongest signal: even PRs beyond 2km got to ballot
   const hasPRBallot = ballotData.some(
@@ -78,13 +82,14 @@ function computePRAccessibility(ballotData: BallotYear[]): PRResult {
     }
   }
 
-  // No ballot held in any year — vacancies remained unfilled
-  const hasNoBallotYear = ballotData.some(y => y.ballot_held === false)
-  if (hasNoBallotYear) {
+  // No ballot in the MOST RECENT year — school is currently accessible.
+  // Deliberately not "any year": 2022 was anomalously undersubscribed post-COVID.
+  // A school that shows SC<1 in 2023 and 2024 is not accessible regardless of 2022.
+  if (mostRecent.ballot_held === false) {
     return {
       pr_color: 'green',
       pr_label: 'Vacancies Remained',
-      pr_summary: 'Phase 2C had unfilled vacancies in at least one recent year',
+      pr_summary: 'Phase 2C had unfilled vacancies in the most recent year — PRs who applied within 1km would have been admitted',
       pr_limited_data: limited,
     }
   }
@@ -102,8 +107,6 @@ function computePRAccessibility(ballotData: BallotYear[]): PRResult {
   }
 
   // Most recent year is SC>2 — demand softening, PRs may get in
-  const sorted = [...ballotData].sort((a, b) => b.year - a.year)
-  const mostRecent = sorted[0]
   if (mostRecent.ballot_type === 'SC>2') {
     return {
       pr_color: 'amber',
@@ -116,7 +119,7 @@ function computePRAccessibility(ballotData: BallotYear[]): PRResult {
   // SC<1 every year — SCs within 1km couldn't all get in; no PR window
   if (allSC1) {
     return {
-      pr_color: 'red',
+      pr_color: 'grey',
       pr_label: 'Effectively Closed',
       pr_summary: 'SCs within 1km have balloted every year — no PR window',
       pr_limited_data: limited,
@@ -149,6 +152,32 @@ function computeQualityStars(school: School): QualityResult {
   return {
     quality_stars: strongCount >= 3 ? 3 : strongCount === 2 ? 2 : 1,
   }
+}
+
+// ─── Manual overrides ─────────────────────────────────────────────────────────
+// Schools whose ballot histories are atypical and need a hand-crafted result.
+// Key = exact DB school name (uppercase).
+
+const SCHOOL_OVERRIDES: Record<string, Partial<PRResult>> = {
+  // 2022=PR<1, 2023=SC<1, 2024=SC1-2 — volatile, no clear PR window
+  'NAVAL BASE PRIMARY SCHOOL': {
+    pr_color: 'orange',
+    pr_label: 'Marginal',
+    pr_summary: 'Inconsistent ballot pattern — limited PR window, outcome uncertain',
+  },
+  // 2022=no_ballot, 2023=PR<1, 2024=SC1-2 — demand tightening, window closing
+  'JING SHAN PRIMARY SCHOOL': {
+    pr_color: 'amber',
+    pr_label: 'Improving Trend',
+    pr_summary: 'Ballot demand softening — SCs beyond 2km are now competing, PR window may emerge',
+  },
+  // 2022=no_ballot, 2023=no_ballot, NO 2024 data — limited data, but genuinely open
+  'KRANJI PRIMARY SCHOOL': {
+    pr_color: 'green',
+    pr_label: 'Vacancies Remained',
+    pr_summary: 'Phase 2C had unfilled vacancies in the most recent year — PRs who applied within 1km would have been admitted',
+    pr_limited_data: true,
+  },
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -205,7 +234,9 @@ async function main() {
 
   for (const school of schools) {
     const ballotData = ballotBySchool.get(school.id) ?? []
-    const pr = computePRAccessibility(ballotData)
+    let pr = computePRAccessibility(ballotData)
+    const override = SCHOOL_OVERRIDES[school.name.toUpperCase()]
+    if (override) pr = { ...pr, ...override }
     const quality = computeQualityStars(school)
 
     const { error: updateErr } = await supabase
