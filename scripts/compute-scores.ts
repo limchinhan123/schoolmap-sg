@@ -64,9 +64,10 @@ function computePRAccessibility(ballotData: BallotYear[]): PRResult {
 
   const limited = ballotData.length < 3
 
-  // PR<1 or PR1-2 in any year — PRs literally reached the ballot queue
+  // PR<1, PR1-2, PR>2 in any year — PRs literally reached the ballot queue
+  // PR>2 is the strongest signal: even PRs beyond 2km got to ballot
   const hasPRBallot = ballotData.some(
-    y => y.ballot_type === 'PR<1' || y.ballot_type === 'PR1-2'
+    y => y.ballot_type === 'PR<1' || y.ballot_type === 'PR1-2' || y.ballot_type === 'PR>2'
   )
   if (hasPRBallot) {
     return {
