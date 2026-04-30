@@ -147,29 +147,51 @@ function PropertySection({ school }: { school: School }) {
   // Compute summary stats
   const hdbProps = props.filter(p => p.source === 'hdb')
   const condoProps = props.filter(p => p.source === 'condo')
-  const allPsf = props.map(p => p.psf)
-  const medPsf = allPsf.sort((a, b) => a - b)[Math.floor(allPsf.length / 2)]
+
+  // Zone median from pre-computed field (100 tx) or fallback to displayed 20
+  const zonePsf = school.avg_psf_1km ?? (() => {
+    const sorted = [...props.map(p => Number(p.psf))].sort((a, b) => a - b)
+    return sorted[Math.floor(sorted.length / 2)]
+  })()
+
+  const psfBandLabel = zonePsf < 600 ? 'Budget' : zonePsf < 750 ? 'Mid-range' : 'Premium'
+  const psfBandColor = zonePsf < 600
+    ? 'bg-emerald-50 text-emerald-700'
+    : zonePsf < 750
+    ? 'bg-amber-50 text-amber-700'
+    : 'bg-red-50 text-red-700'
 
   return (
     <div className="space-y-3">
-      {/* Summary bar */}
-      <div className="flex items-center gap-3 text-xs bg-slate-50 rounded-lg px-3 py-2">
-        <TrendingUp size={13} className="text-slate-400 shrink-0" />
-        <span className="text-slate-500">
-          {props.length} transactions · Median {fmtPsf(medPsf)}/sqft
-        </span>
-        <div className="flex gap-1.5 ml-auto">
-          {hdbProps.length > 0 && (
-            <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-xs">
-              {hdbProps.length} HDB
-            </span>
-          )}
-          {condoProps.length > 0 && (
-            <span className="px-1.5 py-0.5 bg-purple-50 text-purple-600 rounded text-xs">
-              {condoProps.length} Condo
-            </span>
-          )}
+      {/* Zone PSF hero */}
+      <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+        <div>
+          <p className="text-xs text-slate-400 font-medium uppercase tracking-wide mb-0.5">1km Zone Median</p>
+          <p className="text-2xl font-bold text-slate-800">{fmtPsf(zonePsf)}<span className="text-sm font-normal text-slate-400">/sqft</span></p>
         </div>
+        <div className="flex flex-col items-end gap-1.5">
+          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${psfBandColor}`}>
+            {psfBandLabel}
+          </span>
+          <div className="flex gap-1.5">
+            {hdbProps.length > 0 && (
+              <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-xs">
+                {hdbProps.length} HDB
+              </span>
+            )}
+            {condoProps.length > 0 && (
+              <span className="px-1.5 py-0.5 bg-purple-50 text-purple-600 rounded text-xs">
+                {condoProps.length} Condo
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Subtitle */}
+      <div className="flex items-center gap-2 text-xs text-slate-400 px-1">
+        <TrendingUp size={12} className="shrink-0" />
+        <span>Recent transactions within 1km · sorted by date</span>
       </div>
 
       {/* Cards */}
