@@ -59,8 +59,13 @@ export default function AppShell({ schools }: { schools: School[] }) {
   }, [filtered, sortKey, sortDir])
 
   function handleSort(key: SortKey) {
-    if (key === sortKey) setSortDir(d => (d === 'asc' ? 'desc' : 'asc'))
-    else { setSortKey(key); setSortDir('asc') }
+    if (key === sortKey) {
+      setSortDir(d => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSortKey(key)
+      // PSF and tier sort most-useful first (high → low); others ascending
+      setSortDir(key === 'avg_psf_1km' || key === 'quality_stars' ? 'desc' : 'asc')
+    }
   }
 
   return (
