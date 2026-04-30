@@ -13,19 +13,18 @@ const supabase = createClient(
 // 'top10' = IP school + most competitive secondaries
 // 'good'  = autonomous/established affiliated secondary
 const SECONDARY_TIER: Record<string, 'top10' | 'good'> = {
-  // IP secondary schools (integrated programme)
+  // True top-10 IP secondary schools (offer Integrated Programme — no O-levels)
   'Anglo-Chinese School (Independent) (Junior College)': 'top10', // ACS(I) is IP
   'Anglo-Chinese School (Independent) (Secondary)':     'top10',
   "Methodist Girls' School (Secondary)":               'top10', // MGS is IP
   "Nanyang Girls' High School":                        'top10', // NYGH is IP
   "Singapore Chinese Girls' School":                   'top10', // SCGS is IP
-  "St. Joseph's Institution (Junior College)":         'top10', // SJI is IP
-  "St. Joseph's Institution (Secondary)":              'top10',
-  // Strong autonomous affiliated schools
+  // Strong autonomous affiliated schools (good but not IP)
   "CHIJ Katong Convent":                               'good',
   "CHIJ Secondary (Toa Payoh)":                        'good',
   "CHIJ St. Joseph's Convent":                         'good',
   "CHIJ St. Theresa's Convent":                        'good',
+  "Catholic Junior College":                           'good',  // JC affiliation, not IP pipeline
   "Fairfield Methodist School (Secondary)":            'good',
   "Geylang Methodist School (Secondary)":              'good',
   "Holy Innocents' High School":                       'good',
@@ -38,9 +37,10 @@ const SECONDARY_TIER: Record<string, 'top10' | 'good'> = {
   "St. Anthony's Canossian Secondary School":          'good',
   "St. Gabriel's Secondary School":                    'good',
   "St. Hilda's Secondary School":                      'good',
+  "St. Joseph's Institution (Junior College)":         'good',  // SJI is autonomous but not IP
+  "St. Joseph's Institution (Secondary)":              'good',
   "St. Margaret's School (Secondary)":                 'good',
-  "St. Stephen's School":                              'good', // secondary
-  "Catholic Junior College":                           'top10', // CJC feeds from affiliated primaries (IP-ish pipeline)
+  "St. Stephen's School":                              'good',  // secondary
 }
 
 async function main() {
