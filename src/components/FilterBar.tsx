@@ -1,68 +1,37 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { ChevronDown, LayoutList, Map } from 'lucide-react'
 import { type Filters, type Region, type PRColor, type PsfBand } from '@/lib/types'
-import { LayoutList, Map, Info } from 'lucide-react'
 
-// ── Dropdown component ─────────────────────────────────────────────────────────
+// ── Shared hook ────────────────────────────────────────────────────────────────
 
-interface DropdownOption<T> {
-  value: T
-  label: string
-  dot?: string
+function useDropdown() {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    function onMouse(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', onMouse)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onMouse)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
+  return { open, setOpen, ref }
 }
 
-function Dropdown<T extends string | number>({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  label: string
-  options: DropdownOption<T>[]
-  value: T
-  onChange: (v: T) => void
-}) {
-  const active = options.find(o => o.value === value)
-  const isFiltered = value !== options[0].value
+// ── Pill button (shared visual base) ──────────────────────────────────────────
 
-  return (
-    <div className="relative shrink-0">
-      <select
-        value={String(value)}
-        onChange={e => {
-          const raw = e.target.value
-          // Preserve original type (number or string)
-          const typed = typeof options[0].value === 'number' ? (Number(raw) as unknown as T) : (raw as unknown as T)
-          onChange(typed)
-        }}
-        className={`appearance-none cursor-pointer pl-2.5 pr-6 py-1 rounded-full text-sm font-medium border transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 ${
-          isFiltered
-            ? 'bg-slate-800 text-white border-slate-800'
-            : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
-        }`}
-      >
-        {options.map(opt => (
-          <option key={String(opt.value)} value={String(opt.value)}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-      {/* Custom dropdown arrow */}
-      <span className={`pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] ${
-        isFiltered ? 'text-slate-300' : 'text-slate-400'
-      }`}>▾</span>
-      {/* Inline label prefix when filtered */}
-      {isFiltered && (
-        <span className="sr-only">{label}:</span>
-      )}
-    </div>
-  )
-}
-
-// ── Chip component ─────────────────────────────────────────────────────────────
-
-function Chip({
+function PillButton({
   active,
   onClick,
   children,
@@ -74,10 +43,42 @@ function Chip({
   return (
     <button
       onClick={onClick}
-      className={`shrink-0 px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-colors whitespace-nowrap ${
         active
           ? 'bg-slate-800 text-white border-slate-800'
           : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+      }`}
+    >
+      {children}
+      <ChevronDown size={13} className={active ? 'text-slate-300' : 'text-slate-400'} />
+    </button>
+  )
+}
+
+// ── Dropdown menu shell ────────────────────────────────────────────────────────
+
+function DropdownMenu({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="absolute left-0 top-full mt-1.5 z-50 min-w-[180px] rounded-xl bg-white shadow-xl border border-slate-100 py-1 overflow-hidden">
+      {children}
+    </div>
+  )
+}
+
+function DropdownItem({
+  selected,
+  onClick,
+  children,
+}: {
+  selected: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full text-left px-3 py-2 text-sm transition-colors hover:bg-slate-50 ${
+        selected ? 'font-semibold text-slate-800 bg-slate-50' : 'text-slate-600'
       }`}
     >
       {children}
@@ -85,61 +86,132 @@ function Chip({
   )
 }
 
-// ── Programme info popover ─────────────────────────────────────────────────────
+// ── Single-select dropdown ─────────────────────────────────────────────────────
 
-function ProgInfo() {
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  // Close on outside click
-  useEffect(() => {
-    if (!open) return
-    function handle(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener('mousedown', handle)
-    return () => document.removeEventListener('mousedown', handle)
-  }, [open])
+function SingleDropdown<T extends string | number>({
+  options,
+  value,
+  onChange,
+}: {
+  options: { value: T; label: string; dot?: string }[]
+  value: T
+  onChange: (v: T) => void
+}) {
+  const { open, setOpen, ref } = useDropdown()
+  const isActive = value !== options[0].value
+  const current = options.find(o => o.value === value) ?? options[0]
 
   return (
-    <div className="relative shrink-0" ref={ref}>
-      <button
-        onClick={() => setOpen(v => !v)}
-        className="flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-        aria-label="Programme definitions"
-      >
-        <Info size={14} />
-      </button>
+    <div ref={ref} className="relative shrink-0">
+      <PillButton active={isActive} onClick={() => setOpen(v => !v)}>
+        {current.dot && (
+          <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: current.dot }} />
+        )}
+        {current.label}
+      </PillButton>
+
       {open && (
-        <div className="absolute left-0 top-6 z-50 w-72 rounded-xl bg-white shadow-xl border border-slate-100 p-3 text-xs">
-          <p className="font-semibold text-slate-700 mb-2">Special Programmes</p>
-          <div className="space-y-1.5 text-slate-600">
-            <div className="flex gap-2">
-              <span className="font-semibold text-slate-800 w-8 shrink-0">GEP</span>
-              <span>Gifted Education Programme — school hosts GEP classes for identified students</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="font-semibold text-slate-800 w-8 shrink-0">SAP</span>
-              <span>Special Assistance Plan — bilingual school with deep Chinese language focus</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="font-semibold text-slate-800 w-8 shrink-0">ALP</span>
-              <span>Applied Learning Programme — specialised real-world learning focus (e.g. robotics, biotech)</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="font-semibold text-slate-800 w-8 shrink-0">IP</span>
-              <span>Integrated Programme feeder — affiliated secondary skips O-levels, goes straight to A-levels / IB</span>
-            </div>
-          </div>
+        <DropdownMenu>
+          {options.map(opt => (
+            <DropdownItem
+              key={String(opt.value)}
+              selected={value === opt.value}
+              onClick={() => { onChange(opt.value); setOpen(false) }}
+            >
+              <span className="flex items-center gap-2">
+                {opt.dot && (
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: opt.dot }} />
+                )}
+                {opt.label}
+              </span>
+            </DropdownItem>
+          ))}
+        </DropdownMenu>
+      )}
+    </div>
+  )
+}
+
+// ── Programmes multi-select dropdown ──────────────────────────────────────────
+
+const PROG_OPTIONS = [
+  { key: 'gep' as const, label: 'GEP', desc: 'Gifted Education Programme Centre' },
+  { key: 'sap' as const, label: 'SAP', desc: 'Special Assistance Plan (Chinese bilingual)' },
+  { key: 'alp' as const, label: 'ALP', desc: 'Applied Learning Programme focus' },
+  { key: 'ip'  as const, label: 'IP',  desc: 'Integrated Programme feeder — no O-levels' },
+]
+
+function ProgDropdown({
+  filters,
+  onChange,
+}: {
+  filters: Filters
+  onChange: (f: Filters) => void
+}) {
+  const { open, setOpen, ref } = useDropdown()
+  const active = PROG_OPTIONS.filter(p => filters[p.key])
+  const isActive = active.length > 0
+  const label = isActive ? active.map(p => p.label).join(' · ') : 'All Programmes'
+
+  return (
+    <div ref={ref} className="relative shrink-0">
+      <PillButton active={isActive} onClick={() => setOpen(v => !v)}>
+        {label}
+      </PillButton>
+
+      {open && (
+        <div className="absolute left-0 top-full mt-1.5 z-50 w-80 rounded-xl bg-white shadow-xl border border-slate-100 py-1.5 overflow-hidden">
+          {/* All option */}
+          <button
+            onClick={() => onChange({ ...filters, gep: false, sap: false, alp: false, ip: false })}
+            className={`w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors hover:bg-slate-50 ${
+              !isActive ? 'font-semibold text-slate-800 bg-slate-50' : 'text-slate-500'
+            }`}
+          >
+            <span className={`w-4 h-4 rounded border shrink-0 flex items-center justify-center ${
+              !isActive ? 'bg-slate-800 border-slate-800' : 'border-slate-300'
+            }`}>
+              {!isActive && (
+                <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 10">
+                  <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </span>
+            <span>All Programmes</span>
+          </button>
+
+          <div className="h-px bg-slate-100 mx-2 my-1" />
+
+          {PROG_OPTIONS.map(opt => (
+            <button
+              key={opt.key}
+              onClick={() => onChange({ ...filters, [opt.key]: !filters[opt.key] })}
+              className="w-full flex items-start gap-3 px-3 py-2 text-sm transition-colors hover:bg-slate-50 text-left"
+            >
+              <span className={`mt-0.5 w-4 h-4 rounded border shrink-0 flex items-center justify-center ${
+                filters[opt.key] ? 'bg-slate-800 border-slate-800' : 'border-slate-300'
+              }`}>
+                {filters[opt.key] && (
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 10">
+                    <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </span>
+              <div className="min-w-0">
+                <span className="font-semibold text-slate-800">{opt.label}</span>
+                <span className="text-slate-400 ml-2 text-xs">{opt.desc}</span>
+              </div>
+            </button>
+          ))}
         </div>
       )}
     </div>
   )
 }
 
-// ── Region dropdown options ────────────────────────────────────────────────────
+// ── Filter definitions ─────────────────────────────────────────────────────────
 
-const REGION_OPTIONS: DropdownOption<Region | 'All'>[] = [
+const REGION_OPTIONS: { value: Region | 'All'; label: string }[] = [
   { value: 'All',     label: 'All Regions' },
   { value: 'North',   label: 'North' },
   { value: 'South',   label: 'South' },
@@ -148,33 +220,27 @@ const REGION_OPTIONS: DropdownOption<Region | 'All'>[] = [
   { value: 'Central', label: 'Central' },
 ]
 
-// ── Access dropdown options (includes Emerging) ────────────────────────────────
-
-const ACCESS_OPTIONS: DropdownOption<PRColor | 'All' | 'emerging'>[] = [
+const ACCESS_OPTIONS: { value: PRColor | 'All' | 'emerging'; label: string; dot?: string }[] = [
   { value: 'All',      label: 'All Access' },
-  { value: 'green',    label: '● Open' },
-  { value: 'amber',    label: '● Possible' },
-  { value: 'orange',   label: '● Marginal' },
-  { value: 'grey',     label: '● Closed' },
-  { value: 'emerging', label: '◌ Emerging' },
+  { value: 'green',    label: 'Open',      dot: '#22c55e' },
+  { value: 'amber',    label: 'Possible',  dot: '#f59e0b' },
+  { value: 'orange',   label: 'Marginal',  dot: '#f97316' },
+  { value: 'grey',     label: 'Closed',    dot: '#4C1D95' },
+  { value: 'emerging', label: 'Emerging',  dot: '#94a3b8' },
 ]
 
-// ── Quality chips ──────────────────────────────────────────────────────────────
-
 const QUALITY_OPTIONS: { value: 1 | 2 | 3 | 'All'; label: string }[] = [
-  { value: 'All', label: 'Any' },
+  { value: 'All', label: 'Any Quality' },
   { value: 3,     label: '★★★ Top' },
   { value: 2,     label: '★★ Good' },
   { value: 1,     label: '★ Standard' },
 ]
 
-// ── PSF chips ──────────────────────────────────────────────────────────────────
-
-const PSF_OPTIONS: { value: PsfBand; label: string; color?: string }[] = [
-  { value: 'All',     label: 'All' },
-  { value: 'budget',  label: '< $600',    color: '#059669' },
-  { value: 'mid',     label: '$600–750',  color: '#d97706' },
-  { value: 'premium', label: '> $750',    color: '#dc2626' },
+const PSF_OPTIONS: { value: PsfBand; label: string; dot?: string }[] = [
+  { value: 'All',     label: 'Any Zone' },
+  { value: 'budget',  label: 'Budget  < $600',   dot: '#059669' },
+  { value: 'mid',     label: 'Mid  $600–750',     dot: '#d97706' },
+  { value: 'premium', label: 'Premium  > $750',   dot: '#dc2626' },
 ]
 
 // ── Props ──────────────────────────────────────────────────────────────────────
@@ -195,15 +261,15 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
     onChange({ ...filters, [key]: val })
   }
 
-  // Access dropdown drives both `access` and `emerging` fields
+  // Access dropdown combines `access` + `emerging` into one value
   const accessValue: PRColor | 'All' | 'emerging' =
     filters.emerging ? 'emerging' : filters.access
 
-  function handleAccessChange(val: PRColor | 'All' | 'emerging') {
+  function handleAccess(val: PRColor | 'All' | 'emerging') {
     if (val === 'emerging') {
       onChange({ ...filters, access: 'All', emerging: true })
     } else {
-      onChange({ ...filters, access: val, emerging: false })
+      onChange({ ...filters, access: val as PRColor | 'All', emerging: false })
     }
   }
 
@@ -229,7 +295,7 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
           {resultCount}/{total}
         </span>
 
-        <div className="flex rounded-lg border border-slate-200 overflow-hidden shrink-0">
+        <div className="flex rounded-lg border border-slate-200 overflow-hidden shrink-0 ml-auto">
           <button
             onClick={() => onViewChange('map')}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${
@@ -251,62 +317,29 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
         </div>
       </div>
 
-      {/* ── Row 2: all filters in one compact strip ── */}
-      <div className="flex items-center gap-2 px-4 pb-2.5 overflow-x-auto">
-
-        {/* Region dropdown */}
-        <Dropdown
-          label="Region"
+      {/* ── Row 2: five uniform pill dropdowns ── */}
+      <div className="flex items-center gap-2 px-4 pb-2.5">
+        <SingleDropdown
           options={REGION_OPTIONS}
           value={filters.region}
           onChange={v => set('region', v)}
         />
-
-        <div className="w-px h-5 bg-slate-200 shrink-0" />
-
-        {/* Access dropdown (includes Emerging) */}
-        <Dropdown
-          label="Access"
+        <SingleDropdown
           options={ACCESS_OPTIONS}
           value={accessValue}
-          onChange={handleAccessChange}
+          onChange={handleAccess}
         />
-
-        <div className="w-px h-5 bg-slate-200 shrink-0" />
-
-        {/* Quality chips */}
-        <span className="text-xs font-semibold text-slate-400 shrink-0 uppercase tracking-wide">Quality</span>
-        {QUALITY_OPTIONS.map(opt => (
-          <Chip key={opt.value} active={filters.tier === opt.value} onClick={() => set('tier', opt.value)}>
-            {opt.label}
-          </Chip>
-        ))}
-
-        <div className="w-px h-5 bg-slate-200 shrink-0" />
-
-        {/* Programme chips + info popover */}
-        <span className="text-xs font-semibold text-slate-400 shrink-0 uppercase tracking-wide">Prog</span>
-        <ProgInfo />
-        {(['gep', 'sap', 'alp', 'ip'] as const).map(key => (
-          <Chip key={key} active={filters[key]} onClick={() => set(key, !filters[key])}>
-            {key.toUpperCase()}
-          </Chip>
-        ))}
-
-        <div className="w-px h-5 bg-slate-200 shrink-0" />
-
-        {/* Zone PSF chips */}
-        <span className="text-xs font-semibold text-slate-400 shrink-0 uppercase tracking-wide">Zone PSF</span>
-        {PSF_OPTIONS.map(opt => (
-          <Chip key={opt.value} active={filters.psf === opt.value} onClick={() => set('psf', opt.value)}>
-            <span className="flex items-center gap-1.5">
-              {opt.color && (
-                <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: opt.color }} />
-              )}
-              {opt.label}
-            </span>
-          </Chip>
-        ))}
+        <SingleDropdown
+          options={QUALITY_OPTIONS}
+          value={filters.tier}
+          onChange={v => set('tier', v)}
+        />
+        <ProgDropdown filters={filters} onChange={onChange} />
+        <SingleDropdown
+          options={PSF_OPTIONS}
+          value={filters.psf}
+          onChange={v => set('psf', v)}
+        />
       </div>
     </div>
   )
