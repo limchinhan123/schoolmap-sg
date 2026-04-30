@@ -18,6 +18,7 @@ const DEFAULT_FILTERS: Filters = {
   alp: false,
   ip: false,
   emerging: false,
+  psf: 'All',
   search: '',
 }
 
@@ -41,6 +42,9 @@ export default function AppShell({ schools }: { schools: School[] }) {
       if (filters.alp && !s.alp_focus) return false
       if (filters.ip && !s.is_ip_pipeline) return false
       if (filters.emerging && !s.pr_limited_data) return false
+      if (filters.psf === 'budget' && (s.avg_psf_1km == null || s.avg_psf_1km >= 600)) return false
+      if (filters.psf === 'mid' && (s.avg_psf_1km == null || s.avg_psf_1km < 600 || s.avg_psf_1km >= 750)) return false
+      if (filters.psf === 'premium' && (s.avg_psf_1km == null || s.avg_psf_1km < 750)) return false
       if (q && !s.name.toLowerCase().includes(q)) return false
       return true
     })

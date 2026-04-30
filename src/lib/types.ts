@@ -23,6 +23,8 @@ export interface School {
   avg_psf_1km: number | null
 }
 
+export type PsfBand = 'All' | 'budget' | 'mid' | 'premium'
+
 export interface Filters {
   region: Region | 'All'
   access: PRColor | 'All'
@@ -32,6 +34,7 @@ export interface Filters {
   alp: boolean
   ip: boolean
   emerging: boolean
+  psf: PsfBand
   search: string
 }
 
