@@ -20,7 +20,7 @@ const COLOR_MAP: Record<string, string> = {
 const COLOR_SCORE: Record<string, number> = { green: 4, amber: 3, orange: 2, grey: 1 }
 
 function getPinClass(school: School, isSelected: boolean) {
-  const size = school.pr_color === 'grey' ? 'small' : 'large'
+  const size = 'large'
   const limited = school.pr_limited_data ? ' limited' : ''
   const sel = isSelected ? ' selected' : ''
   return `school-pin pr-${school.pr_color} ${size}${limited}${sel}`
@@ -170,7 +170,7 @@ export default function MapView({
               'orange', COLOR_MAP.orange,
               COLOR_MAP.grey,
             ],
-            'circle-radius': ['match', ['get', 'pr_color'], 'grey', 5, 9],
+            'circle-radius': 9,
             'circle-stroke-width': 2,
             'circle-stroke-color': '#fff',
           }}
