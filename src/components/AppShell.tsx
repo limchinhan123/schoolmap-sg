@@ -57,7 +57,13 @@ export default function AppShell({ schools }: { schools: School[] }) {
       else if (sortKey === 'region') cmp = a.region.localeCompare(b.region)
       else if (sortKey === 'pr_color') cmp = PR_ORDER[a.pr_color] - PR_ORDER[b.pr_color]
       else if (sortKey === 'quality_stars') cmp = a.quality_stars - b.quality_stars
-      else if (sortKey === 'avg_psf_1km') cmp = (a.avg_psf_1km ?? 0) - (b.avg_psf_1km ?? 0)
+      else if (sortKey === 'avg_psf_1km') {
+        // Nulls always go last regardless of direction
+        if (a.avg_psf_1km == null && b.avg_psf_1km == null) cmp = 0
+        else if (a.avg_psf_1km == null) return 1
+        else if (b.avg_psf_1km == null) return -1
+        else cmp = a.avg_psf_1km - b.avg_psf_1km
+      }
       return sortDir === 'asc' ? cmp : -cmp
     })
   }, [filtered, sortKey, sortDir])
