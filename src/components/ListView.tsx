@@ -3,6 +3,13 @@
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import type { School, SortDir, SortKey } from '@/lib/types'
 
+function psfColor(psf: number): string {
+  if (psf < 550) return 'text-emerald-600'
+  if (psf < 700) return 'text-amber-600'
+  if (psf < 850) return 'text-orange-600'
+  return 'text-red-600'
+}
+
 const COLOR_DOT: Record<string, string> = {
   green: 'bg-green-500',
   amber: 'bg-amber-500',
@@ -123,7 +130,7 @@ export default function ListView({
                 <td className={`px-4 py-3 text-sm ${isSelected ? 'text-slate-200' : 'text-slate-500'}`}>
                   {school.is_gep_centre ? '✓' : ''}
                 </td>
-                <td className={`px-4 py-3 text-sm hidden md:table-cell ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>
+                <td className={`px-4 py-3 text-sm font-medium hidden md:table-cell ${isSelected ? 'text-slate-300' : school.avg_psf_1km ? psfColor(school.avg_psf_1km) : 'text-slate-300'}`}>
                   {school.avg_psf_1km ? `$${school.avg_psf_1km.toLocaleString()}` : '—'}
                 </td>
               </tr>
