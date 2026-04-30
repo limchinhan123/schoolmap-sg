@@ -7,13 +7,13 @@ const COLOR_BG: Record<string, string> = {
   green: 'bg-green-100 text-green-800',
   amber: 'bg-amber-100 text-amber-800',
   orange: 'bg-orange-100 text-orange-800',
-  grey: 'bg-slate-100 text-slate-600',
+  grey: 'bg-violet-100 text-violet-900',
 }
 const COLOR_DOT: Record<string, string> = {
   green: 'bg-green-500',
   amber: 'bg-amber-500',
   orange: 'bg-orange-500',
-  grey: 'bg-slate-400',
+  grey: 'bg-violet-900',
 }
 
 function Stars({ n }: { n: 1 | 2 | 3 }) {

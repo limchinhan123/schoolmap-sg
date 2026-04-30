@@ -9,7 +9,7 @@ const ACCESS_OPTIONS: { value: PRColor | 'All'; label: string; dot?: string }[] 
   { value: 'green', label: 'Open', dot: '#22c55e' },
   { value: 'amber', label: 'Possible', dot: '#f59e0b' },
   { value: 'orange', label: 'Marginal', dot: '#f97316' },
-  { value: 'grey', label: 'Closed', dot: '#94a3b8' },
+  { value: 'grey', label: 'Closed', dot: '#4C1D95' },
 ]
 const TIER_OPTIONS: { value: 1 | 2 | 3 | 'All'; label: string }[] = [
   { value: 'All', label: 'All Tiers' },
@@ -149,6 +149,16 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
             {key.toUpperCase()}
           </Chip>
         ))}
+
+        <div className="w-px h-5 bg-slate-200 shrink-0 mx-1" />
+
+        {/* Emerging schools */}
+        <Chip active={filters.emerging} onClick={() => set('emerging', !filters.emerging)}>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-2 h-2 rounded-full border-2 border-current opacity-70" />
+            Emerging
+          </span>
+        </Chip>
       </div>
     </div>
   )

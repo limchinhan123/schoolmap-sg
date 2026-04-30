@@ -7,7 +7,7 @@ const COLOR_DOT: Record<string, string> = {
   green: 'bg-green-500',
   amber: 'bg-amber-500',
   orange: 'bg-orange-500',
-  grey: 'bg-slate-400',
+  grey: 'bg-violet-900',
 }
 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {

@@ -30,6 +30,7 @@ export interface Filters {
   sap: boolean
   alp: boolean
   ip: boolean
+  emerging: boolean
   search: string
 }
 

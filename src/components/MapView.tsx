@@ -15,7 +15,7 @@ const COLOR_MAP: Record<string, string> = {
   green: '#22c55e',
   amber: '#f59e0b',
   orange: '#f97316',
-  grey: '#94a3b8',
+  grey: '#4C1D95',
 }
 const COLOR_SCORE: Record<string, number> = { green: 4, amber: 3, orange: 2, grey: 1 }
 
@@ -94,6 +94,23 @@ export default function MapView({
       onClick={handleMapClick}
       onZoom={e => setZoom(e.viewState.zoom)}
     >
+      {/* MRT / rapid-transit lines from OSM data in the light-v11 composite tileset */}
+      <Layer
+        {...{
+          id: 'mrt-lines',
+          type: 'line',
+          source: 'composite',
+          'source-layer': 'road',
+          filter: ['in', ['get', 'class'], ['literal', ['major_rail', 'minor_rail']]],
+          minzoom: 10,
+          paint: {
+            'line-color': '#1e3a5f',
+            'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.5, 14, 3.5],
+            'line-opacity': ['interpolate', ['linear'], ['zoom'], 10, 0.45, 13, 0.7],
+          },
+        }}
+      />
+
       <Source
         id="schools"
         type="geojson"

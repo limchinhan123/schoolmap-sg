@@ -17,6 +17,7 @@ const DEFAULT_FILTERS: Filters = {
   sap: false,
   alp: false,
   ip: false,
+  emerging: false,
   search: '',
 }
 
@@ -39,6 +40,7 @@ export default function AppShell({ schools }: { schools: School[] }) {
       if (filters.sap && !s.is_sap) return false
       if (filters.alp && !s.alp_focus) return false
       if (filters.ip && !s.is_ip_pipeline) return false
+      if (filters.emerging && !s.pr_limited_data) return false
       if (q && !s.name.toLowerCase().includes(q)) return false
       return true
     })
