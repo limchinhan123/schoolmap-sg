@@ -72,9 +72,7 @@ export default function ListView({
             <Th label="Access" sortKey="pr_color" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-36" />
             <Th label="Tier" sortKey="quality_stars" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-20" />
             <th className="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-14">GEP</th>
-            <th className="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-28 hidden md:table-cell">
-              Avg PSF 1km
-            </th>
+            <Th label="PSF 1km" sortKey="avg_psf_1km" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-28 hidden md:table-cell" />
           </tr>
         </thead>
         <tbody>

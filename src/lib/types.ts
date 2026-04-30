@@ -35,7 +35,7 @@ export interface Filters {
   search: string
 }
 
-export type SortKey = 'name' | 'region' | 'pr_color' | 'quality_stars'
+export type SortKey = 'name' | 'region' | 'pr_color' | 'quality_stars' | 'avg_psf_1km'
 export type SortDir = 'asc' | 'desc'
 
 export interface NearbyProperty {
