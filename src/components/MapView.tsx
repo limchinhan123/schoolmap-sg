@@ -94,19 +94,22 @@ export default function MapView({
       onClick={handleMapClick}
       onZoom={e => setZoom(e.viewState.zoom)}
     >
-      {/* MRT / rapid-transit lines from OSM data in the light-v11 composite tileset */}
+      {/* MRT station dots — subtle, neighbourhood-orientation only at zoom ≥ 13 */}
       <Layer
         {...{
-          id: 'mrt-lines',
-          type: 'line',
+          id: 'mrt-stations',
+          type: 'circle',
           source: 'composite',
-          'source-layer': 'road',
-          filter: ['in', ['get', 'class'], ['literal', ['major_rail', 'minor_rail']]],
-          minzoom: 10,
+          'source-layer': 'transit_stop_label',
+          filter: ['==', ['get', 'stop_type'], 'subway'],
+          minzoom: 13,
           paint: {
-            'line-color': '#1e3a5f',
-            'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.5, 14, 3.5],
-            'line-opacity': ['interpolate', ['linear'], ['zoom'], 10, 0.45, 13, 0.7],
+            'circle-color': '#1e3a5f',
+            'circle-radius': 4,
+            'circle-opacity': 0.55,
+            'circle-stroke-width': 1.5,
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-opacity': 0.85,
           },
         }}
       />
