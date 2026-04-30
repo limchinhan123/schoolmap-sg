@@ -126,7 +126,7 @@ export default function ListView({
                   {school.is_gep_centre ? '✓' : ''}
                 </td>
                 <td className={`px-4 py-3 text-sm hidden md:table-cell ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>
-                  —
+                  {school.avg_psf_1km ? `$${school.avg_psf_1km.toLocaleString()}` : '—'}
                 </td>
               </tr>
             )

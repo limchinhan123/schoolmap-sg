@@ -20,6 +20,7 @@ export interface School {
   pr_summary: string
   pr_limited_data: boolean
   quality_stars: 1 | 2 | 3
+  avg_psf_1km: number | null
 }
 
 export interface Filters {
@@ -36,3 +37,15 @@ export interface Filters {
 
 export type SortKey = 'name' | 'region' | 'pr_color' | 'quality_stars'
 export type SortDir = 'asc' | 'desc'
+
+export interface NearbyProperty {
+  source: 'hdb' | 'condo'
+  property_name: string
+  flat_type: string
+  floor_area_sqft: number
+  resale_price: number
+  psf: number
+  transaction_date: string
+  remaining_lease_years: number | null
+  distance_m: number
+}
