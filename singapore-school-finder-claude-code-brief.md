@@ -128,51 +128,70 @@ last_updated          TIMESTAMP
 
 ```typescript
 function computePRAccessibility(ballotData: BallotYear[]): {
-  color: 'green' | 'amber' | 'orange' | 'red' | 'grey',
+  color: 'green' | 'amber' | 'orange' | 'grey',
   label: string,
   summary: string
 } {
-  
+
   // Hard rule: insufficient data
   if (ballotData.length < 2) {
     return { color: 'grey', label: 'Insufficient Data', summary: 'Less than 2 years of data available' }
   }
 
-  // Check for PR<1 ballot in any year — PRs were literally in the queue
-  const hasPRBallot = ballotData.some(y => y.ballot_type === 'PR<1' || y.ballot_type === 'PR1-2')
+  const limited = ballotData.length < 3
+
+  // Sort descending so sorted[0] is always the most recent year
+  const sorted = [...ballotData].sort((a, b) => b.year - a.year)
+  const mostRecent = sorted[0]
+
+  // PR<1, PR1-2, PR>2 in any year — PRs literally reached the ballot queue
+  const hasPRBallot = ballotData.some(
+    y => y.ballot_type === 'PR<1' || y.ballot_type === 'PR1-2' || y.ballot_type === 'PR>2'
+  )
   if (hasPRBallot) {
     return { color: 'green', label: 'PR Window Confirmed', summary: 'PRs have reached the ballot queue in at least one recent year' }
   }
 
-  // Check for no ballot in any year — vacancies remained
-  const hasNoBallotYear = ballotData.some(y => y.ballot_held === false)
-  if (hasNoBallotYear) {
-    return { color: 'green', label: 'Vacancies Remained', summary: 'Phase 2C had unfilled vacancies in at least one recent year' }
+  // No ballot in the most recent year — check if the pattern is sustained.
+  // Requiring two no-ballot years (most recent + at least one prior) avoids
+  // false-green for schools that merely cleared their ballot once.
+  if (mostRecent.ballot_held === false) {
+    const priorNoBallot = sorted.slice(1).some(y => y.ballot_held === false)
+    if (priorNoBallot) {
+      return { color: 'green', label: 'Vacancies Remained', summary: 'Phase 2C had unfilled vacancies in multiple recent years — PRs who applied within 1km would have been admitted' }
+    }
+    // Most recent year cleared but all prior years had a ballot
+    return { color: 'amber', label: 'Recently Cleared', summary: 'Phase 2C had no ballot in the most recent year, but had ballots in prior years — trend is improving but not yet confirmed' }
   }
 
-  // Supplementary triggered — complex, positive signal
+  // Supplementary triggered + not all SC<1 — undersubscribed signal
   const hasSupplementary = ballotData.some(y => y.supplementary_triggered === true)
-  if (hasSupplementary && !ballotData.every(y => y.ballot_type === 'SC<1')) {
-    return { color: 'amber', label: 'Possible Window', summary: 'School was undersubscribed in some phases' }
-  }
-
-  // SC>2 ballot in most recent year — trending toward PR window
-  const mostRecentYear = ballotData.sort((a,b) => b.year - a.year)[0]
-  const priorYears = ballotData.slice(1)
-  if (mostRecentYear.ballot_type === 'SC>2') {
-    return { color: 'amber', label: 'Improving Trend', summary: 'Ballot demand softening — SCs beyond 2km are now competing' }
-  }
-
-  // SC<1 all years — SCs within 1km couldn't all get in
   const allSC1 = ballotData.every(y => y.ballot_type === 'SC<1')
-  if (allSC1) {
-    return { color: 'red', label: 'Effectively Closed', summary: 'SCs within 1km have balloted every year — no PR window' }
+  if (hasSupplementary && !allSC1) {
+    return { color: 'amber', label: 'Possible Window', summary: 'School was undersubscribed in some phases — supplementary round triggered' }
   }
 
-  // Mixed SC<1 and SC1-2
-  return { color: 'orange', label: 'Marginal', summary: 'Inconsistent ballot pattern — limited PR window' }
+  // Most recent year is SC>2 — demand softening, PRs may get in
+  if (mostRecent.ballot_type === 'SC>2') {
+    return { color: 'amber', label: 'Improving Trend', summary: 'Ballot demand softening — SCs beyond 2km are now competing, PR window may emerge' }
+  }
+
+  // SC<1 every year — SCs within 1km couldn't all get in; no PR window
+  if (allSC1) {
+    return { color: 'grey', label: 'Effectively Closed', summary: 'SCs within 1km have balloted every year — no PR window' }
+  }
+
+  // Mixed SC<1 and SC1-2 — inconsistent, marginal
+  return { color: 'orange', label: 'Marginal', summary: 'Inconsistent ballot pattern — limited PR window, outcome uncertain' }
 }
 ```
+
+**Amber sub-labels:**
+- `'Possible Window'` — supplementary round triggered in at least one year, not all SC<1
+- `'Improving Trend'` — most recent year ballot reached SC>2 (demand softening)
+- `'Recently Cleared'` — most recent year had no ballot, but prior year(s) did; one-year trend only
+
+**Note:** `'red'` was removed from the color set. Effectively Closed schools use `'grey'`.
 
 ### Emerging Window Flag:
 ```typescript
@@ -541,6 +560,8 @@ Contact individual schools directly to confirm volunteer availability.
 ---
 
 ## 13. Build Sequence
+
+> **Data validation note:** Phase 2C ballot data (2022–2024) validated against [sgschooling.com](http://sgschooling.com) re-scrape (April 2026). MOE historical data not independently accessible via any automated route — validation confirms import accuracy only, not source accuracy.
 
 ### Pre-requisites Before Week 1
 1. Get API keys: Mapbox (free), OneMap (free at onemap.gov.sg), URA (free at ura.gov.sg), Supabase (free tier)
