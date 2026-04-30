@@ -13,12 +13,22 @@ const supabase = createClient(
 // 'top10' = IP school + most competitive secondaries
 // 'good'  = autonomous/established affiliated secondary
 const SECONDARY_TIER: Record<string, 'top10' | 'good'> = {
-  // True top-10 IP secondary schools (offer Integrated Programme — no O-levels)
-  'Anglo-Chinese School (Independent) (Junior College)': 'top10', // ACS(I) is IP
+  // ── Top-10 secondary schools (brief-specified list) ──────────────────────────
+  // All are either IP schools or consistently ranked in the top tier nationally.
+  // NOTE: RI, Hwa Chong, NUS High, RGS, Victoria have NO affiliated primary
+  //       schools in MOE's system — they are government-stream schools.
+  //       Entries below are future-proofed in case affiliations are ever added.
+  'Raffles Institution':                               'top10', // no current primary affiliate
+  'Hwa Chong Institution':                             'top10', // no current primary affiliate
+  'NUS High School of Mathematics and Science':        'top10', // no current primary affiliate
+  "Raffles Girls' School (Secondary)":                 'top10', // no current primary affiliate
+  'Victoria School':                                   'top10', // no current primary affiliate
+  // Active affiliates — primary schools in our DB map to these:
+  'Anglo-Chinese School (Independent) (Junior College)': 'top10', // ACS(I) is IP; feeds ACS Junior + ACS Primary
   'Anglo-Chinese School (Independent) (Secondary)':     'top10',
-  "Methodist Girls' School (Secondary)":               'top10', // MGS is IP
-  "Nanyang Girls' High School":                        'top10', // NYGH is IP
-  "Singapore Chinese Girls' School":                   'top10', // SCGS is IP
+  "Methodist Girls' School (Secondary)":               'top10', // MGS is IP; feeds MGS Primary
+  "Nanyang Girls' High School":                        'top10', // NYGH is IP; feeds Nanyang Primary
+  "Singapore Chinese Girls' School":                   'top10', // SCGS is IP; feeds SCGS Primary
   // Strong autonomous affiliated schools (good but not IP)
   "CHIJ Katong Convent":                               'good',
   "CHIJ Secondary (Toa Payoh)":                        'good',
