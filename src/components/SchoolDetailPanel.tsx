@@ -1,6 +1,6 @@
 'use client'
 
-import { X, AlertCircle, Home, Building2, TrendingUp } from 'lucide-react'
+import { X, AlertCircle, TrendingUp, MapPin, Calendar, Layers } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import type { School, NearbyProperty } from '@/lib/types'
@@ -32,13 +32,24 @@ function Stars({ n }: { n: 1 | 2 | 3 }) {
   )
 }
 
-/** Lease years → colour class for the badge */
+/** Lease years → colour class (matches spec: 90+ 🟢 / 80-89 🟡 / 70-79 🟠 / 60-69 🔴 / <60 ⛔) */
 function leaseColor(years: number | null): string {
   if (years == null) return 'bg-slate-100 text-slate-500'
-  if (years >= 70) return 'bg-emerald-100 text-emerald-700'
-  if (years >= 50) return 'bg-amber-100 text-amber-700'
-  if (years >= 30) return 'bg-orange-100 text-orange-700'
-  return 'bg-red-100 text-red-700'
+  if (years >= 90) return 'bg-emerald-100 text-emerald-700'
+  if (years >= 80) return 'bg-amber-100 text-amber-700'
+  if (years >= 70) return 'bg-orange-100 text-orange-700'
+  if (years >= 60) return 'bg-red-100 text-red-700'
+  return 'bg-red-200 text-red-800'
+}
+
+/** Shorten URA tenure strings for display */
+function fmtTenure(tenure: string | null): string | null {
+  if (!tenure) return null
+  if (/freehold/i.test(tenure)) return 'Freehold'
+  if (/999/i.test(tenure)) return '999-yr leasehold'
+  const m = tenure.match(/^(\d+)\s*yrs?/i)
+  if (m) return `${m[1]}-yr leasehold`
+  return tenure
 }
 
 function fmt(n: number): string {
@@ -63,46 +74,81 @@ function PropertyCard({ p }: { p: NearbyProperty }) {
     month: 'short', year: 'numeric',
   })
   const isHdb = p.source === 'hdb'
+  const tenureLabel = isHdb ? null : fmtTenure(p.tenure)
 
   return (
-    <div className="rounded-xl border border-slate-100 bg-white p-3 flex flex-col gap-1.5 shadow-sm">
-      {/* Header row */}
+    <div className="rounded-xl border border-slate-100 bg-white p-3 flex flex-col gap-2 shadow-sm">
+
+      {/* ── Row 1: Type badge + property name + distance ── */}
       <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-1.5 min-w-0">
-          {isHdb
-            ? <Home size={13} className="text-slate-400 shrink-0" />
-            : <Building2 size={13} className="text-slate-400 shrink-0" />}
+        <div className="flex items-center gap-2 min-w-0">
+          {/* Prominent type badge */}
+          <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wide ${
+            isHdb
+              ? 'bg-blue-100 text-blue-700'
+              : 'bg-purple-100 text-purple-700'
+          }`}>
+            {isHdb ? 'HDB' : 'CONDO'}
+          </span>
           <span className="text-xs font-semibold text-slate-700 truncate">{p.property_name}</span>
         </div>
-        <span className="text-xs text-slate-400 shrink-0">{distLabel(p.distance_m)}</span>
+        {/* Distance from gate */}
+        <div className="flex items-center gap-1 shrink-0 text-xs text-slate-400">
+          <MapPin size={11} className="shrink-0" />
+          <span>{distLabel(p.distance_m)} from gate</span>
+        </div>
       </div>
 
-      {/* Type + area row */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs text-slate-500">{p.flat_type}</span>
+      {/* ── Row 2: Flat type · size · floor ── */}
+      <div className="flex items-center gap-1.5 flex-wrap text-xs text-slate-500">
+        <span>{p.flat_type}</span>
         <span className="text-slate-300">·</span>
-        <span className="text-xs text-slate-500">{Math.round(p.floor_area_sqft).toLocaleString()} sqft</span>
-        {isHdb && p.remaining_lease_years != null && (
+        <span>{Math.round(p.floor_area_sqft).toLocaleString()} sqft</span>
+        {p.floor_level && (
           <>
             <span className="text-slate-300">·</span>
-            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${leaseColor(p.remaining_lease_years)}`}>
-              {p.remaining_lease_years}yr lease
+            <span className="flex items-center gap-0.5">
+              <Layers size={10} className="text-slate-400" />
+              {p.floor_level}
             </span>
           </>
         )}
       </div>
 
-      {/* Price row */}
-      <div className="flex items-baseline justify-between mt-0.5">
-        <div className="flex items-baseline gap-2">
-          <span className="text-sm font-bold text-slate-800">{fmt(p.resale_price)}</span>
-          <span className="text-xs text-slate-500">{fmtPsf(p.psf)}/sqft</span>
+      {/* ── Row 3: Lease / tenure badge ── */}
+      {isHdb && p.remaining_lease_years != null ? (
+        <div className="flex items-center gap-1.5">
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${leaseColor(p.remaining_lease_years)}`}>
+            {p.remaining_lease_years}yr lease remaining
+          </span>
         </div>
-        <div className="text-right">
-          <span className="text-xs text-orange-600 font-medium">+{fmt(absd)} ABSD</span>
-          <span className="text-xs text-slate-400 ml-1.5">{monthYear}</span>
+      ) : !isHdb && tenureLabel ? (
+        <div className="flex items-center gap-1.5">
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+            tenureLabel === 'Freehold' || tenureLabel === '999-yr leasehold'
+              ? 'bg-emerald-100 text-emerald-700'
+              : 'bg-slate-100 text-slate-600'
+          }`}>
+            {tenureLabel}
+          </span>
+        </div>
+      ) : null}
+
+      {/* ── Row 4: Price + PSF ── */}
+      <div className="flex items-baseline gap-2">
+        <span className="text-sm font-bold text-slate-800">{fmt(p.resale_price)}</span>
+        <span className="text-xs text-slate-500">{fmtPsf(p.psf)}/sqft</span>
+      </div>
+
+      {/* ── Row 5: ABSD + date ── */}
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-orange-600 font-medium">+{fmt(absd)} (5% ABSD for PRs)</span>
+        <div className="flex items-center gap-1 text-slate-400">
+          <Calendar size={11} />
+          <span>{monthYear}</span>
         </div>
       </div>
+
     </div>
   )
 }

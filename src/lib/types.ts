@@ -51,4 +51,6 @@ export interface NearbyProperty {
   transaction_date: string
   remaining_lease_years: number | null
   distance_m: number
+  floor_level: string | null
+  tenure: string | null
 }
