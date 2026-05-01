@@ -646,7 +646,7 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
         {/* ── Row 1: logo + search + count + view toggle ── */}
         <div className="flex items-center gap-3 px-4 py-2.5">
           <span className="font-bold text-slate-800 text-base tracking-tight shrink-0">
-            Kiasu School Hunt
+            PR School Hunt
           </span>
 
           <div className="flex-1 max-w-xs">
