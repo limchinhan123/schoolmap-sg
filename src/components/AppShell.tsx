@@ -63,6 +63,11 @@ export default function AppShell({ schools }: { schools: School[] }) {
         else if (a.avg_psf_1km == null) return 1
         else if (b.avg_psf_1km == null) return -1
         else cmp = a.avg_psf_1km - b.avg_psf_1km
+      } else if (sortKey === 'programmes') {
+        // GEP weighted highest (rarest), then SAP, ALP, IP
+        const score = (s: typeof a) =>
+          (s.is_gep_centre ? 8 : 0) + (s.is_sap ? 2 : 0) + (s.alp_focus ? 1 : 0) + (s.is_ip_pipeline ? 1 : 0)
+        cmp = score(a) - score(b)
       }
       return sortDir === 'asc' ? cmp : -cmp
     })
