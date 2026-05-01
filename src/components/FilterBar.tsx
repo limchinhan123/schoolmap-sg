@@ -646,7 +646,7 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
         {/* ── Row 1: logo + search (desktop only) + count (desktop only) + view toggle ── */}
         <div className="flex items-center gap-3 px-4 py-2.5">
           <span className="font-bold text-slate-800 text-base tracking-tight shrink-0">
-            School Hunt for PR kids
+            School Hunt for SG PR
           </span>
 
           {/* Search — desktop only; mobile gets it in row 2 */}
