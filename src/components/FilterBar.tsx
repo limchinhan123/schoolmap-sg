@@ -643,13 +643,28 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
   return (
     <>
       <div className="bg-white border-b border-slate-200 shadow-sm z-20 shrink-0">
-        {/* ── Row 1: logo + count + view toggle ── */}
+        {/* ── Row 1: logo + search (desktop only) + count (desktop only) + view toggle ── */}
         <div className="flex items-center gap-3 px-4 py-2.5">
           <span className="font-bold text-slate-800 text-base tracking-tight shrink-0">
             School Hunt for PR kids
           </span>
 
-          <div className="flex rounded-lg border border-slate-200 overflow-hidden shrink-0 ml-auto">
+          {/* Search — desktop only; mobile gets it in row 2 */}
+          <div className="hidden md:block flex-1 max-w-xs">
+            <input
+              type="search"
+              placeholder="Search school…"
+              value={filters.search}
+              onChange={e => set('search', e.target.value)}
+              className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 bg-slate-50"
+            />
+          </div>
+
+          <span className="hidden md:block text-xs text-slate-400 shrink-0">
+            {resultCount}/{total}
+          </span>
+
+          <div className="flex rounded-lg border border-slate-200 overflow-hidden shrink-0 ml-auto md:ml-0">
             <button
               onClick={() => onViewChange('map')}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${
@@ -720,16 +735,6 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
               value={filters.psf}
               onChange={v => set('psf', v)}
             />
-            <input
-              type="search"
-              placeholder="Search school…"
-              value={filters.search}
-              onChange={e => set('search', e.target.value)}
-              className="ml-auto w-48 px-3 py-1.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 bg-slate-50"
-            />
-            <span className="text-xs text-slate-400 shrink-0">
-              {resultCount}/{total}
-            </span>
           </div>
         </div>
       </div>
