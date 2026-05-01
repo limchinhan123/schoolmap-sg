@@ -41,6 +41,15 @@ export interface Filters {
 export type SortKey = 'name' | 'region' | 'pr_color' | 'quality_stars' | 'avg_psf_1km'
 export type SortDir = 'asc' | 'desc'
 
+export interface BallotRound {
+  year: number
+  ballot_type: string
+  phase2c_vacancies: number | null
+  phase2c_applicants: number | null
+  ballot_held: boolean
+  supplementary_triggered: boolean
+}
+
 export interface NearbyProperty {
   source: 'hdb' | 'condo'
   property_name: string

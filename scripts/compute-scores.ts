@@ -82,14 +82,24 @@ function computePRAccessibility(ballotData: BallotYear[]): PRResult {
     }
   }
 
-  // No ballot in the MOST RECENT year — school is currently accessible.
-  // Deliberately not "any year": 2022 was anomalously undersubscribed post-COVID.
-  // A school that shows SC<1 in 2023 and 2024 is not accessible regardless of 2022.
+  // No ballot in the MOST RECENT year — check if the pattern is sustained.
+  // Requiring two no-ballot years (most recent + at least one prior) avoids
+  // false-green for schools that merely cleared their ballot once.
   if (mostRecent.ballot_held === false) {
+    const priorNoBallot = sorted.slice(1).some(y => y.ballot_held === false)
+    if (priorNoBallot) {
+      return {
+        pr_color: 'green',
+        pr_label: 'Vacancies Remained',
+        pr_summary: 'Phase 2C had unfilled vacancies in multiple recent years — PRs who applied within 1km would have been admitted',
+        pr_limited_data: limited,
+      }
+    }
+    // Most recent year cleared but all prior years had a ballot — treat as amber
     return {
-      pr_color: 'green',
-      pr_label: 'Vacancies Remained',
-      pr_summary: 'Phase 2C had unfilled vacancies in the most recent year — PRs who applied within 1km would have been admitted',
+      pr_color: 'amber',
+      pr_label: 'Recently Cleared',
+      pr_summary: 'Phase 2C had no ballot in the most recent year, but had ballots in prior years — trend is improving but not yet confirmed',
       pr_limited_data: limited,
     }
   }
