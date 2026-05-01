@@ -11,13 +11,12 @@ const MapView = dynamic(() => import('./MapView'), { ssr: false })
 
 const DEFAULT_FILTERS: Filters = {
   region: 'All',
-  access: 'All',
+  access: [],
   tier: 'All',
   gep: false,
   sap: false,
   alp: false,
   ip: false,
-  emerging: false,
   psf: 'All',
   search: '',
 }
@@ -35,13 +34,17 @@ export default function AppShell({ schools }: { schools: School[] }) {
     const q = filters.search.toLowerCase().trim()
     return schools.filter(s => {
       if (filters.region !== 'All' && s.region !== filters.region) return false
-      if (filters.access !== 'All' && s.pr_color !== filters.access) return false
+      if (filters.access.length > 0) {
+        const matches = filters.access.some(a =>
+          a === 'emerging' ? s.pr_limited_data : s.pr_color === a
+        )
+        if (!matches) return false
+      }
       if (filters.tier !== 'All' && s.quality_stars !== filters.tier) return false
       if (filters.gep && !s.is_gep_centre) return false
       if (filters.sap && !s.is_sap) return false
       if (filters.alp && !s.alp_focus) return false
       if (filters.ip && !s.is_ip_pipeline) return false
-      if (filters.emerging && !s.pr_limited_data) return false
       if (filters.psf === 'budget' && (s.avg_psf_1km == null || s.avg_psf_1km >= 600)) return false
       if (filters.psf === 'mid' && (s.avg_psf_1km == null || s.avg_psf_1km < 600 || s.avg_psf_1km >= 750)) return false
       if (filters.psf === 'premium' && (s.avg_psf_1km == null || s.avg_psf_1km < 750)) return false

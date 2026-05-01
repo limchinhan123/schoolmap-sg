@@ -27,13 +27,12 @@ export type PsfBand = 'All' | 'budget' | 'mid' | 'premium'
 
 export interface Filters {
   region: Region | 'All'
-  access: PRColor | 'All'
+  access: (PRColor | 'emerging')[]
   tier: 1 | 2 | 3 | 'All'
   gep: boolean
   sap: boolean
   alp: boolean
   ip: boolean
-  emerging: boolean
   psf: PsfBand
   search: string
 }
