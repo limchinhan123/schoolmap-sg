@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     siteName: 'School Hunt for SG PR',
     images: [
       {
-        url: 'https://schoolmap-sg.vercel.app/og-image.jpg',
+        url: 'https://schoolmap-sg.vercel.app/og-v2.jpg',
         width: 1200,
         height: 630,
         alt: 'School Hunt for SG PR',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'School Hunt for SG PR - where got chance ah?',
     description: 'Some schools are never meant for PR. Know your odds!',
-    images: ['https://schoolmap-sg.vercel.app/og-image.jpg'],
+    images: ['https://schoolmap-sg.vercel.app/og-v2.jpg'],
   },
 }
 
