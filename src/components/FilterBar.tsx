@@ -279,6 +279,17 @@ function QualityDropdown({
   )
 }
 
+// ── Access options (defined here so AccessDropdown and sheet both reference the same array) ──
+
+const ACCESS_OPTIONS: { value: PRColor | 'All' | 'emerging'; label: string; dot?: string; desc?: string }[] = [
+  { value: 'All',      label: 'Got Chance for PR?' },
+  { value: 'green',    label: 'Open',      dot: '#22c55e', desc: 'PRs have reached the ballot in recent years' },
+  { value: 'amber',    label: 'Possible',  dot: '#f59e0b', desc: 'Demand softening — a window may be opening' },
+  { value: 'orange',   label: 'Marginal',  dot: '#f97316', desc: 'Patchy history — occasional chance, not reliable' },
+  { value: 'grey',     label: 'Closed',    dot: '#4C1D95', desc: 'Oversubscribed by SCs — no realistic PR window' },
+  { value: 'emerging', label: 'Emerging',  dot: '#94a3b8', desc: 'New school or limited data — outcome uncertain' },
+]
+
 // ── Access dropdown (single-select with dot + two-line description rows) ─────────
 
 function AccessDropdown({
@@ -342,15 +353,6 @@ const REGION_OPTIONS: { value: Region | 'All'; label: string }[] = [
   { value: 'Central', label: 'Central' },
 ]
 
-const ACCESS_OPTIONS: { value: PRColor | 'All' | 'emerging'; label: string; dot?: string; desc?: string }[] = [
-  { value: 'All',      label: 'Got Chance for PR?' },
-  { value: 'green',    label: 'Open',      dot: '#22c55e', desc: 'PRs have reached the ballot in recent years' },
-  { value: 'amber',    label: 'Possible',  dot: '#f59e0b', desc: 'Demand softening — a window may be opening' },
-  { value: 'orange',   label: 'Marginal',  dot: '#f97316', desc: 'Patchy history — occasional chance, not reliable' },
-  { value: 'grey',     label: 'Closed',    dot: '#4C1D95', desc: 'Oversubscribed by SCs — no realistic PR window' },
-  { value: 'emerging', label: 'Emerging',  dot: '#94a3b8', desc: 'New school or limited data — outcome uncertain' },
-]
-
 const PSF_OPTIONS: { value: PsfBand; label: string; dot?: string }[] = [
   { value: 'All',     label: 'Any Zone' },
   { value: 'budget',  label: 'Budget  < $600',   dot: '#059669' },
@@ -381,12 +383,16 @@ function SheetRadioRow<T extends string | number>({
         {selected && <span className="w-2 h-2 rounded-full bg-slate-800" />}
       </span>
       {opt.dot && (
-        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: opt.dot }} />
+        <span className="w-2.5 h-2.5 rounded-full shrink-0 mt-0.5" style={{ backgroundColor: opt.dot }} />
       )}
-      <span className={`flex-1 ${selected ? 'font-semibold text-slate-800' : 'text-slate-600'}`}>
-        {opt.stars ? `${opt.stars} ` : ''}{opt.label}
-      </span>
-      {opt.desc && <span className="text-xs text-slate-400 ml-1 hidden sm:inline">{opt.desc}</span>}
+      <div className="flex-1 min-w-0">
+        <div className={`leading-snug ${selected ? 'font-semibold text-slate-800' : 'text-slate-600'}`}>
+          {opt.stars ? `${opt.stars} ` : ''}{opt.label}
+        </div>
+        {opt.desc && (
+          <div className="text-xs text-slate-400 leading-snug mt-0.5">{opt.desc}</div>
+        )}
+      </div>
     </button>
   )
 }
