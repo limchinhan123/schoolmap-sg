@@ -607,6 +607,21 @@ function FilterBottomSheet({
   )
 }
 
+// ── Default filters (used for reset) ──────────────────────────────────────────
+
+const DEFAULT_FILTERS: Filters = {
+  region: 'All',
+  access: 'All',
+  tier: 'All',
+  gep: false,
+  sap: false,
+  alp: false,
+  ip: false,
+  emerging: false,
+  psf: 'All',
+  search: '',
+}
+
 // ── Props ──────────────────────────────────────────────────────────────────────
 
 interface Props {
@@ -712,6 +727,15 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
             <span className="text-xs text-slate-400 shrink-0">
               {resultCount}/{total}
             </span>
+            {activeCount > 0 && (
+              <button
+                onClick={() => onChange(DEFAULT_FILTERS)}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium text-red-500 border border-red-200 bg-red-50 hover:bg-red-100 transition-colors shrink-0"
+              >
+                <X size={11} />
+                Reset
+              </button>
+            )}
           </div>
 
           {/* Desktop pill row — hidden below md */}
@@ -735,6 +759,15 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
               value={filters.psf}
               onChange={v => set('psf', v)}
             />
+            {activeCount > 0 && (
+              <button
+                onClick={() => onChange(DEFAULT_FILTERS)}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium text-red-500 border border-red-200 bg-red-50 hover:bg-red-100 transition-colors"
+              >
+                <X size={11} />
+                Reset all
+              </button>
+            )}
           </div>
         </div>
       </div>
