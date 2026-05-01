@@ -5,7 +5,6 @@ import Map, { Marker, Source, Layer, type MapRef, type MapMouseEvent } from 'rea
 import type { GeoJSONSource, GeoJSONFeature } from 'mapbox-gl'
 import type { FeatureCollection, GeoJsonProperties, Point } from 'geojson'
 import type { School } from '@/lib/types'
-import type { MapboxEvent } from 'mapbox-gl'
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!
 
@@ -42,7 +41,7 @@ export default function MapView({
 
   // Part B — force a resize after the map finishes its initial load so it
   // fills whatever container size the CSS has settled on at that moment.
-  const handleMapLoad = useCallback((_e: MapboxEvent) => {
+  const handleMapLoad = useCallback(() => {
     mapRef.current?.resize()
   }, [])
 
