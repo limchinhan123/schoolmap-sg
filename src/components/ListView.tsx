@@ -10,6 +10,44 @@ function psfColor(psf: number): string {
   return 'text-red-600'
 }
 
+function psfColorSelected(psf: number): string {
+  if (psf < 550) return 'text-emerald-300'
+  if (psf < 700) return 'text-amber-300'
+  if (psf < 850) return 'text-orange-300'
+  return 'text-red-300'
+}
+
+type ProgBadge = { label: string; bg: string; text: string }
+const PROG_BADGES: Record<string, ProgBadge> = {
+  gep: { label: 'GEP', bg: 'bg-violet-100', text: 'text-violet-700' },
+  sap: { label: 'SAP', bg: 'bg-sky-100',    text: 'text-sky-700'    },
+  alp: { label: 'ALP', bg: 'bg-teal-100',   text: 'text-teal-700'  },
+  ip:  { label: 'IP',  bg: 'bg-rose-100',   text: 'text-rose-700'  },
+}
+
+function ProgBadges({ school, selected }: { school: School; selected: boolean }) {
+  const badges: ProgBadge[] = []
+  if (school.is_gep_centre) badges.push(PROG_BADGES.gep)
+  if (school.is_sap)        badges.push(PROG_BADGES.sap)
+  if (school.alp_focus)     badges.push(PROG_BADGES.alp)
+  if (school.is_ip_pipeline) badges.push(PROG_BADGES.ip)
+  if (badges.length === 0) return <span className={selected ? 'text-slate-500' : 'text-slate-300'}>—</span>
+  return (
+    <span className="flex flex-wrap gap-1">
+      {badges.map(b => (
+        <span
+          key={b.label}
+          className={`inline-block px-1 py-0.5 rounded text-[10px] font-semibold leading-none ${
+            selected ? 'bg-slate-700 text-slate-200' : `${b.bg} ${b.text}`
+          }`}
+        >
+          {b.label}
+        </span>
+      ))}
+    </span>
+  )
+}
+
 const COLOR_DOT: Record<string, string> = {
   green: 'bg-green-500',
   amber: 'bg-amber-500',
@@ -78,8 +116,8 @@ export default function ListView({
             <Th label="Region" sortKey="region" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-28 hidden sm:table-cell" />
             <Th label="Access" sortKey="pr_color" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-36" />
             <Th label="Tier" sortKey="quality_stars" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-20" />
-            <th className="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-14">GEP</th>
-            <Th label="PSF 1km" sortKey="avg_psf_1km" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-28 hidden md:table-cell" />
+            <Th label="Progs" sortKey="programmes" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-28" />
+            <Th label="PSF 1km" sortKey="avg_psf_1km" currentKey={sortKey} currentDir={sortDir} onSort={onSort} className="w-24 hidden sm:table-cell" />
           </tr>
         </thead>
         <tbody>
@@ -108,6 +146,11 @@ export default function ListView({
                     </span>
                     <span className={`text-xs sm:hidden mt-0.5 ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>
                       {school.region}
+                      {school.avg_psf_1km && (
+                        <span className={`ml-2 font-medium ${isSelected ? psfColorSelected(school.avg_psf_1km) : psfColor(school.avg_psf_1km)}`}>
+                          ${school.avg_psf_1km.toLocaleString()} psf
+                        </span>
+                      )}
                     </span>
                   </div>
                 </td>
@@ -127,10 +170,10 @@ export default function ListView({
                 <td className={`px-4 py-3 text-sm ${isSelected ? 'text-amber-300' : 'text-amber-400'}`}>
                   {'★'.repeat(school.quality_stars)}
                 </td>
-                <td className={`px-4 py-3 text-sm ${isSelected ? 'text-slate-200' : 'text-slate-500'}`}>
-                  {school.is_gep_centre ? '✓' : ''}
+                <td className="px-4 py-3">
+                  <ProgBadges school={school} selected={isSelected} />
                 </td>
-                <td className={`px-4 py-3 text-sm font-medium hidden md:table-cell ${isSelected ? 'text-slate-300' : school.avg_psf_1km ? psfColor(school.avg_psf_1km) : 'text-slate-300'}`}>
+                <td className={`px-4 py-3 text-sm font-medium hidden sm:table-cell ${isSelected ? (school.avg_psf_1km ? psfColorSelected(school.avg_psf_1km) : 'text-slate-500') : school.avg_psf_1km ? psfColor(school.avg_psf_1km) : 'text-slate-300'}`}>
                   {school.avg_psf_1km ? `$${school.avg_psf_1km.toLocaleString()}` : '—'}
                 </td>
               </tr>
