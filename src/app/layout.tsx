@@ -3,16 +3,16 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'School Hunt for SG PR - where got chance ah?',
-  description: 'School Hunt for SG PR - where got chance ah?',
+  description: 'Know your odds before you buy that condo. Phase 2C ballot history for every SG primary school.',
   openGraph: {
     title: 'School Hunt for SG PR - where got chance ah?',
-    description: 'School Hunt for SG PR - where got chance ah?',
+    description: 'Know your odds before you buy that condo. Phase 2C ballot history for every SG primary school.',
     url: 'https://schoolmap-sg.vercel.app',
     siteName: 'School Hunt for SG PR',
     images: [
       {
         url: 'https://schoolmap-sg.vercel.app/og-image.jpg',
-        width: 630,
+        width: 1200,
         height: 630,
         alt: 'School Hunt for SG PR',
       },
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'School Hunt for SG PR - where got chance ah?',
-    description: 'School Hunt for SG PR - where got chance ah?',
+    description: 'Know your odds before you buy that condo. Phase 2C ballot history for every SG primary school.',
     images: ['https://schoolmap-sg.vercel.app/og-image.jpg'],
   },
 }
