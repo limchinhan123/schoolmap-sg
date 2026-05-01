@@ -279,6 +279,58 @@ function QualityDropdown({
   )
 }
 
+// ── Access dropdown (single-select with dot + two-line description rows) ─────────
+
+function AccessDropdown({
+  value,
+  onChange,
+}: {
+  value: PRColor | 'All' | 'emerging'
+  onChange: (v: PRColor | 'All' | 'emerging') => void
+}) {
+  const { open, setOpen, ref } = useDropdown()
+  const isActive = value !== 'All'
+  const current = ACCESS_OPTIONS.find(o => o.value === value) ?? ACCESS_OPTIONS[0]
+
+  return (
+    <div ref={ref} className="relative shrink-0">
+      <PillButton active={isActive} onClick={() => setOpen(v => !v)}>
+        {current.dot && (
+          <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: current.dot }} />
+        )}
+        {current.label}
+      </PillButton>
+
+      {open && (
+        <div className="absolute left-0 top-full mt-1.5 z-50 w-72 rounded-xl bg-white shadow-xl border border-slate-100 py-1 overflow-hidden">
+          {ACCESS_OPTIONS.map(opt => (
+            <button
+              key={String(opt.value)}
+              onClick={() => { onChange(opt.value); setOpen(false) }}
+              className={`w-full flex items-start gap-2.5 px-3 py-2 text-sm transition-colors hover:bg-slate-50 text-left ${
+                value === opt.value ? 'bg-slate-50' : ''
+              }`}
+            >
+              {/* colour dot or placeholder for 'All' */}
+              <span className="mt-0.5 shrink-0 w-3 h-3 rounded-full" style={
+                opt.dot ? { backgroundColor: opt.dot } : { border: '1.5px solid #cbd5e1' }
+              } />
+              <div className="min-w-0">
+                <div className={`font-semibold leading-snug ${value === opt.value ? 'text-slate-800' : 'text-slate-700'}`}>
+                  {opt.label}
+                </div>
+                {opt.desc && (
+                  <div className="text-xs text-slate-400 leading-snug mt-0.5">{opt.desc}</div>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── Filter definitions ─────────────────────────────────────────────────────────
 
 const REGION_OPTIONS: { value: Region | 'All'; label: string }[] = [
@@ -290,13 +342,13 @@ const REGION_OPTIONS: { value: Region | 'All'; label: string }[] = [
   { value: 'Central', label: 'Central' },
 ]
 
-const ACCESS_OPTIONS: { value: PRColor | 'All' | 'emerging'; label: string; dot?: string }[] = [
-  { value: 'All',      label: 'All Access' },
-  { value: 'green',    label: 'Open',      dot: '#22c55e' },
-  { value: 'amber',    label: 'Possible',  dot: '#f59e0b' },
-  { value: 'orange',   label: 'Marginal',  dot: '#f97316' },
-  { value: 'grey',     label: 'Closed',    dot: '#4C1D95' },
-  { value: 'emerging', label: 'Emerging',  dot: '#94a3b8' },
+const ACCESS_OPTIONS: { value: PRColor | 'All' | 'emerging'; label: string; dot?: string; desc?: string }[] = [
+  { value: 'All',      label: 'Got Chance for PR?' },
+  { value: 'green',    label: 'Open',      dot: '#22c55e', desc: 'PRs have reached the ballot in recent years' },
+  { value: 'amber',    label: 'Possible',  dot: '#f59e0b', desc: 'Demand softening — a window may be opening' },
+  { value: 'orange',   label: 'Marginal',  dot: '#f97316', desc: 'Patchy history — occasional chance, not reliable' },
+  { value: 'grey',     label: 'Closed',    dot: '#4C1D95', desc: 'Oversubscribed by SCs — no realistic PR window' },
+  { value: 'emerging', label: 'Emerging',  dot: '#94a3b8', desc: 'New school or limited data — outcome uncertain' },
 ]
 
 const PSF_OPTIONS: { value: PsfBand; label: string; dot?: string }[] = [
@@ -452,7 +504,7 @@ function FilterBottomSheet({
           </SheetSection>
 
           {/* PR Access */}
-          <SheetSection title="PR Access">
+          <SheetSection title="Got Chance for PR?">
             {ACCESS_OPTIONS.map(opt => (
               <SheetRadioRow
                 key={String(opt.value)}
@@ -656,8 +708,7 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
               value={filters.region}
               onChange={v => set('region', v)}
             />
-            <SingleDropdown
-              options={ACCESS_OPTIONS}
+            <AccessDropdown
               value={accessValue}
               onChange={handleAccess}
             />
