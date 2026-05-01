@@ -35,7 +35,7 @@ function useDropdown() {
 function useActiveFilterCount(filters: Filters): number {
   let n = 0
   if (filters.region !== 'All') n++
-  if (filters.access !== 'All' || filters.emerging) n++
+  if (filters.access.length > 0) n++
   if (filters.tier !== 'All') n++
   if (filters.gep || filters.sap || filters.alp || filters.ip) n++
   if (filters.psf !== 'All') n++
@@ -281,8 +281,7 @@ function QualityDropdown({
 
 // ── Access options (defined here so AccessDropdown and sheet both reference the same array) ──
 
-const ACCESS_OPTIONS: { value: PRColor | 'All' | 'emerging'; label: string; dot?: string; desc?: string }[] = [
-  { value: 'All',      label: 'Got Chance for PR?' },
+const ACCESS_OPTIONS: { value: PRColor | 'emerging'; label: string; dot: string; desc: string }[] = [
   { value: 'green',    label: 'Open',      dot: '#22c55e', desc: 'PRs have reached the ballot in recent years' },
   { value: 'amber',    label: 'Possible',  dot: '#f59e0b', desc: 'Demand softening — a window may be opening' },
   { value: 'orange',   label: 'Marginal',  dot: '#f97316', desc: 'Patchy history — occasional chance, not reliable' },
@@ -290,52 +289,101 @@ const ACCESS_OPTIONS: { value: PRColor | 'All' | 'emerging'; label: string; dot?
   { value: 'emerging', label: 'Emerging',  dot: '#94a3b8', desc: 'New school or limited data — outcome uncertain' },
 ]
 
-// ── Access dropdown (single-select with dot + two-line description rows) ─────────
+// ── Access dropdown (multi-select checkboxes) ─────────────────────────────────
 
 function AccessDropdown({
   value,
   onChange,
 }: {
-  value: PRColor | 'All' | 'emerging'
-  onChange: (v: PRColor | 'All' | 'emerging') => void
+  value: (PRColor | 'emerging')[]
+  onChange: (v: (PRColor | 'emerging')[]) => void
 }) {
   const { open, setOpen, ref } = useDropdown()
-  const isActive = value !== 'All'
-  const current = ACCESS_OPTIONS.find(o => o.value === value) ?? ACCESS_OPTIONS[0]
+  const isActive = value.length > 0
+
+  function toggle(v: PRColor | 'emerging') {
+    if (value.includes(v)) {
+      onChange(value.filter(x => x !== v))
+    } else {
+      onChange([...value, v])
+    }
+  }
+
+  // Pill label
+  let pillLabel: React.ReactNode
+  if (value.length === 0) {
+    pillLabel = 'Got Chance for PR?'
+  } else if (value.length === 1) {
+    const opt = ACCESS_OPTIONS.find(o => o.value === value[0])!
+    pillLabel = (
+      <>
+        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: opt.dot }} />
+        {opt.label}
+      </>
+    )
+  } else {
+    pillLabel = (
+      <>
+        {value.map(v => {
+          const opt = ACCESS_OPTIONS.find(o => o.value === v)!
+          return <span key={v} className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: opt.dot }} />
+        })}
+        <span>{value.length} selected</span>
+      </>
+    )
+  }
 
   return (
     <div ref={ref} className="relative shrink-0">
       <PillButton active={isActive} onClick={() => setOpen(v => !v)}>
-        {current.dot && (
-          <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: current.dot }} />
-        )}
-        {current.label}
+        {pillLabel}
       </PillButton>
 
       {open && (
-        <div className="absolute left-0 top-full mt-1.5 z-50 w-72 rounded-xl bg-white shadow-xl border border-slate-100 py-1 overflow-hidden">
-          {ACCESS_OPTIONS.map(opt => (
-            <button
-              key={String(opt.value)}
-              onClick={() => { onChange(opt.value); setOpen(false) }}
-              className={`w-full flex items-start gap-2.5 px-3 py-2 text-sm transition-colors hover:bg-slate-50 text-left ${
-                value === opt.value ? 'bg-slate-50' : ''
-              }`}
-            >
-              {/* colour dot or placeholder for 'All' */}
-              <span className="mt-0.5 shrink-0 w-3 h-3 rounded-full" style={
-                opt.dot ? { backgroundColor: opt.dot } : { border: '1.5px solid #cbd5e1' }
-              } />
-              <div className="min-w-0">
-                <div className={`font-semibold leading-snug ${value === opt.value ? 'text-slate-800' : 'text-slate-700'}`}>
-                  {opt.label}
-                </div>
-                {opt.desc && (
+        <div className="absolute left-0 top-full mt-1.5 z-50 w-72 rounded-xl bg-white shadow-xl border border-slate-100 overflow-hidden">
+          {/* Clear all row */}
+          <button
+            onClick={() => onChange([])}
+            className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm border-b border-slate-100 transition-colors hover:bg-slate-50 ${
+              value.length === 0 ? 'bg-slate-50' : ''
+            }`}
+          >
+            <span className="w-4 h-4 rounded border shrink-0 flex items-center justify-center border-slate-300">
+              {value.length === 0 && <span className="w-2 h-2 rounded-full bg-slate-800" />}
+            </span>
+            <span className={`font-semibold ${value.length === 0 ? 'text-slate-800' : 'text-slate-500'}`}>
+              Any / All
+            </span>
+          </button>
+
+          {ACCESS_OPTIONS.map(opt => {
+            const checked = value.includes(opt.value)
+            return (
+              <button
+                key={opt.value}
+                onClick={() => toggle(opt.value)}
+                className={`w-full flex items-start gap-2.5 px-3 py-2 text-sm transition-colors hover:bg-slate-50 text-left ${checked ? 'bg-slate-50' : ''}`}
+              >
+                {/* Checkbox */}
+                <span className={`mt-0.5 w-4 h-4 rounded border shrink-0 flex items-center justify-center transition-colors ${
+                  checked ? 'bg-slate-800 border-slate-800' : 'border-slate-300'
+                }`}>
+                  {checked && (
+                    <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 10">
+                      <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </span>
+                <span className="mt-0.5 w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: opt.dot }} />
+                <div className="min-w-0">
+                  <div className={`font-semibold leading-snug ${checked ? 'text-slate-800' : 'text-slate-700'}`}>
+                    {opt.label}
+                  </div>
                   <div className="text-xs text-slate-400 leading-snug mt-0.5">{opt.desc}</div>
-                )}
-              </div>
-            </button>
-          ))}
+                </div>
+              </button>
+            )
+          })}
         </div>
       )}
     </div>
@@ -444,15 +492,10 @@ function FilterBottomSheet({
     onChange({ ...filters, [key]: val })
   }
 
-  const accessValue: PRColor | 'All' | 'emerging' =
-    filters.emerging ? 'emerging' : filters.access
-
-  function handleAccess(val: PRColor | 'All' | 'emerging') {
-    if (val === 'emerging') {
-      onChange({ ...filters, access: 'All', emerging: true })
-    } else {
-      onChange({ ...filters, access: val as PRColor | 'All', emerging: false })
-    }
+  function toggleAccess(val: PRColor | 'emerging') {
+    const current = filters.access
+    const next = current.includes(val) ? current.filter(x => x !== val) : [...current, val]
+    onChange({ ...filters, access: next })
   }
 
   if (typeof document === 'undefined') return null
@@ -509,16 +552,49 @@ function FilterBottomSheet({
             ))}
           </SheetSection>
 
-          {/* PR Access */}
+          {/* PR Access — multi-select */}
           <SheetSection title="Got Chance for PR?">
-            {ACCESS_OPTIONS.map(opt => (
-              <SheetRadioRow
-                key={String(opt.value)}
-                opt={opt}
-                selected={accessValue === opt.value}
-                onSelect={() => handleAccess(opt.value)}
-              />
-            ))}
+            {/* Clear row */}
+            <button
+              onClick={() => onChange({ ...filters, access: [] })}
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm text-left active:bg-slate-50"
+            >
+              <span className={`w-4 h-4 rounded-full border shrink-0 flex items-center justify-center ${
+                filters.access.length === 0 ? 'border-slate-800' : 'border-slate-300'
+              }`}>
+                {filters.access.length === 0 && <span className="w-2 h-2 rounded-full bg-slate-800" />}
+              </span>
+              <span className={`flex-1 ${filters.access.length === 0 ? 'font-semibold text-slate-800' : 'text-slate-600'}`}>
+                Any / All
+              </span>
+            </button>
+            {ACCESS_OPTIONS.map(opt => {
+              const checked = filters.access.includes(opt.value)
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => toggleAccess(opt.value)}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-left active:bg-slate-50"
+                >
+                  <span className={`w-4 h-4 rounded border shrink-0 flex items-center justify-center transition-colors ${
+                    checked ? 'bg-slate-800 border-slate-800' : 'border-slate-300'
+                  }`}>
+                    {checked && (
+                      <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 10">
+                        <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </span>
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: opt.dot }} />
+                  <div className="flex-1 min-w-0">
+                    <div className={`leading-snug ${checked ? 'font-semibold text-slate-800' : 'text-slate-600'}`}>
+                      {opt.label}
+                    </div>
+                    <div className="text-xs text-slate-400 leading-snug mt-0.5">{opt.desc}</div>
+                  </div>
+                </button>
+              )
+            })}
           </SheetSection>
 
           {/* Quality */}
@@ -611,13 +687,12 @@ function FilterBottomSheet({
 
 const DEFAULT_FILTERS: Filters = {
   region: 'All',
-  access: 'All',
+  access: [],
   tier: 'All',
   gep: false,
   sap: false,
   alp: false,
   ip: false,
-  emerging: false,
   psf: 'All',
   search: '',
 }
@@ -641,18 +716,6 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
 
   function set<K extends keyof Filters>(key: K, val: Filters[K]) {
     onChange({ ...filters, [key]: val })
-  }
-
-  // Access dropdown combines `access` + `emerging` into one value
-  const accessValue: PRColor | 'All' | 'emerging' =
-    filters.emerging ? 'emerging' : filters.access
-
-  function handleAccess(val: PRColor | 'All' | 'emerging') {
-    if (val === 'emerging') {
-      onChange({ ...filters, access: 'All', emerging: true })
-    } else {
-      onChange({ ...filters, access: val as PRColor | 'All', emerging: false })
-    }
   }
 
   return (
@@ -746,8 +809,8 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
               onChange={v => set('region', v)}
             />
             <AccessDropdown
-              value={accessValue}
-              onChange={handleAccess}
+              value={filters.access}
+              onChange={v => onChange({ ...filters, access: v })}
             />
             <QualityDropdown
               value={filters.tier}
