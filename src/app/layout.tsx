@@ -3,10 +3,10 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'School Hunt for SG PR - where got chance ah?',
-  description: 'Not every school open for PR. Know first!',
+  description: 'Some schools are never meant for PR. Know your odds!',
   openGraph: {
     title: 'School Hunt for SG PR - where got chance ah?',
-    description: 'Not every school open for PR. Know first!',
+    description: 'Some schools are never meant for PR. Know your odds!',
     url: 'https://schoolmap-sg.vercel.app/?v=1',
     siteName: 'School Hunt for SG PR',
     images: [
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'School Hunt for SG PR - where got chance ah?',
-    description: 'Not every school open for PR. Know first!',
+    description: 'Some schools are never meant for PR. Know your odds!',
     images: ['https://schoolmap-sg.vercel.app/og-v3.jpg'],
   },
 }
