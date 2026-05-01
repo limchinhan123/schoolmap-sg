@@ -3,7 +3,7 @@
 import { X, AlertCircle, TrendingUp, MapPin, Calendar, Layers } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import type { School, NearbyProperty } from '@/lib/types'
+import type { School, NearbyProperty, BallotRound } from '@/lib/types'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -153,6 +153,118 @@ function PropertyCard({ p }: { p: NearbyProperty }) {
   )
 }
 
+// ── Ballot history ─────────────────────────────────────────────────────────────
+
+const BALLOT_DESC: Record<string, string> = {
+  no_ballot:  'Vacancies remained — no ballot needed',
+  'PR<1':     'Ballot among PRs within 1km',
+  'PR1-2':    'Ballot among PRs, 1–2km distance',
+  'PR<2#':    'Ballot among PRs within 2km',
+  'PR>2':     'Ballot among PRs beyond 2km',
+  'SC<1':     'Ballot among SCs within 1km',
+  'SC1-2':    'Ballot among SCs, 1–2km distance',
+  'SC<2#':    'Ballot among SCs within 2km',
+  'SC>2':     'Ballot among SCs beyond 2km',
+  'SC#':      'Ballot among SCs',
+}
+
+/** Colour token for ballot_type pill */
+function ballotColor(bt: string): string {
+  if (bt === 'no_ballot')        return 'bg-green-50 text-green-700'
+  if (bt.startsWith('PR'))       return 'bg-amber-50 text-amber-700'
+  if (bt === 'SC<1' || bt === 'SC#') return 'bg-red-50 text-red-700'
+  if (bt.startsWith('SC'))       return 'bg-orange-50 text-orange-700'
+  return 'bg-slate-50 text-slate-600'
+}
+
+function BallotHistory({ schoolId }: { schoolId: string }) {
+  const [rounds, setRounds] = useState<BallotRound[] | null>(null)
+
+  useEffect(() => {
+    setRounds(null)
+    supabase
+      .from('school_ballot_data')
+      .select('year, ballot_type, phase2c_vacancies, phase2c_applicants, ballot_held, supplementary_triggered')
+      .eq('school_id', schoolId)
+      .order('year', { ascending: false })
+      .then(({ data, error }) => {
+        if (!error && data) setRounds(data as BallotRound[])
+      })
+  }, [schoolId])
+
+  if (rounds === null) {
+    return <div className="h-16 rounded-lg bg-slate-50 animate-pulse mt-3" />
+  }
+
+  if (rounds.length === 0) {
+    return <p className="text-xs text-slate-400 mt-3">No ballot history available.</p>
+  }
+
+  return (
+    <div className="mt-3 space-y-1.5">
+      <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-2">
+        Year-by-Year History
+      </p>
+      {rounds.map(r => (
+        <div
+          key={r.year}
+          className="flex items-start gap-2.5 py-2 px-3 rounded-lg bg-slate-50 text-xs"
+        >
+          {/* Year */}
+          <span className="shrink-0 font-bold text-slate-700 w-9">{r.year}</span>
+
+          {/* Ballot type pill */}
+          <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wide ${ballotColor(r.ballot_type)}`}>
+            {r.ballot_type}
+          </span>
+
+          {/* Description + flags */}
+          <div className="flex-1 min-w-0 space-y-1">
+            <p className="text-slate-600 leading-snug">
+              {BALLOT_DESC[r.ballot_type] ?? r.ballot_type}
+            </p>
+            <div className="flex flex-wrap gap-1">
+              {r.supplementary_triggered && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-violet-50 text-violet-700 font-medium">
+                  2C(S) triggered
+                </span>
+              )}
+              {r.ballot_type === 'PR<1' && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 font-medium">
+                  PRs reached ballot queue
+                </span>
+              )}
+              {r.ballot_type === 'SC<1' && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-red-700 font-medium">
+                  SCs within 1km oversubscribed
+                </span>
+              )}
+              {r.ballot_type === 'SC>2' && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-50 text-orange-700 font-medium">
+                  Only SCs beyond 2km competing
+                </span>
+              )}
+              {r.ballot_type === 'no_ballot' && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-50 text-green-700 font-medium">
+                  Vacancies remained
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Vacancies / applicants ratio */}
+          {r.phase2c_vacancies != null && r.phase2c_applicants != null && (
+            <div className="shrink-0 text-right text-[10px] text-slate-400 leading-snug">
+              <div>{r.phase2c_applicants} applied</div>
+              <div>{r.phase2c_vacancies} places</div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 // ── Property Section ───────────────────────────────────────────────────────────
 
 function PropertySection({ school }: { school: School }) {
@@ -269,12 +381,16 @@ export default function SchoolDetailPanel({
 
   return (
     <div
-      className={`absolute bottom-0 left-0 right-0 z-30 transition-transform duration-300 ease-out ${
-        visible ? 'translate-y-0' : 'translate-y-full'
-      }`}
+      className={`
+        absolute bottom-0 left-0 right-0 z-30 transition-transform duration-300 ease-out
+        md:relative md:bottom-auto md:left-auto md:right-auto
+        md:w-96 md:flex-shrink-0 md:z-auto md:translate-y-0
+        md:border-l md:border-slate-200
+        ${visible ? 'translate-y-0' : 'translate-y-full md:hidden'}
+      `}
       aria-hidden={!visible}
     >
-      <div className="bg-white rounded-t-2xl shadow-2xl max-h-[70vh] overflow-y-auto">
+      <div className="bg-white rounded-t-2xl shadow-2xl max-h-[70vh] md:max-h-none md:h-full md:rounded-none md:shadow-none overflow-y-auto">
         {school && (
           <>
             {/* Header */}
@@ -344,6 +460,7 @@ export default function SchoolDetailPanel({
                       )}
                     </div>
                     <p className="text-sm text-slate-600 leading-relaxed">{school.pr_summary}</p>
+                    <BallotHistory schoolId={school.id} />
                   </div>
 
                   {/* School Quality */}

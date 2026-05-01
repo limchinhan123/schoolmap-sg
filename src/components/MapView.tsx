@@ -5,6 +5,7 @@ import Map, { Marker, Source, Layer, type MapRef, type MapMouseEvent } from 'rea
 import type { GeoJSONSource, GeoJSONFeature } from 'mapbox-gl'
 import type { FeatureCollection, GeoJsonProperties, Point } from 'geojson'
 import type { School } from '@/lib/types'
+import type { MapboxEvent } from 'mapbox-gl'
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!
 
@@ -36,7 +37,26 @@ export default function MapView({
   onSelect: (s: School | null) => void
 }) {
   const mapRef = useRef<MapRef>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const [zoom, setZoom] = useState(SINGAPORE.zoom)
+
+  // Part B — force a resize after the map finishes its initial load so it
+  // fills whatever container size the CSS has settled on at that moment.
+  const handleMapLoad = useCallback((_e: MapboxEvent) => {
+    mapRef.current?.resize()
+  }, [])
+
+  // Part B — watch the wrapper div for any subsequent size changes
+  // (panel open/close, window resize, orientation change) and relay to Mapbox.
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const observer = new ResizeObserver(() => {
+      mapRef.current?.resize()
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   const geojson = useMemo<FeatureCollection<Point, GeoJsonProperties>>(() => ({
     type: 'FeatureCollection',
@@ -83,6 +103,7 @@ export default function MapView({
   const showIndividualPins = zoom >= 13
 
   return (
+    <div ref={containerRef} className="w-full h-full">
     <Map
       ref={mapRef}
       mapboxAccessToken={TOKEN}
@@ -91,6 +112,7 @@ export default function MapView({
       mapStyle="mapbox://styles/mapbox/light-v11"
       style={{ width: '100%', height: '100%' }}
       interactiveLayerIds={['clusters']}
+      onLoad={handleMapLoad}
       onClick={handleMapClick}
       onZoom={e => setZoom(e.viewState.zoom)}
     >
@@ -197,5 +219,6 @@ export default function MapView({
           </Marker>
         ))}
     </Map>
+    </div>
   )
 }

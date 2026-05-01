@@ -89,23 +89,27 @@ export default function AppShell({ schools }: { schools: School[] }) {
         total={schools.length}
       />
 
-      <div className="flex-1 relative overflow-hidden">
-        {view === 'map' ? (
-          <MapView
-            schools={filtered}
-            selected={selected}
-            onSelect={setSelected}
-          />
-        ) : (
-          <ListView
-            schools={sorted}
-            selected={selected}
-            onSelect={setSelected}
-            sortKey={sortKey}
-            sortDir={sortDir}
-            onSort={handleSort}
-          />
-        )}
+      {/* Desktop: map + panel side-by-side (flex-row). Mobile: map fills area, panel overlays. */}
+      <div className="flex-1 relative overflow-hidden md:flex md:flex-row">
+        {/* Map / List — absolute fill on mobile so it doesn't shrink; flex-1 on desktop */}
+        <div className="absolute inset-0 md:relative md:inset-auto md:flex-1">
+          {view === 'map' ? (
+            <MapView
+              schools={filtered}
+              selected={selected}
+              onSelect={setSelected}
+            />
+          ) : (
+            <ListView
+              schools={sorted}
+              selected={selected}
+              onSelect={setSelected}
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={handleSort}
+            />
+          )}
+        </div>
 
         <SchoolDetailPanel
           school={selected}
