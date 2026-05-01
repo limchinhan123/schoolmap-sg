@@ -643,24 +643,10 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
   return (
     <>
       <div className="bg-white border-b border-slate-200 shadow-sm z-20 shrink-0">
-        {/* ── Row 1: logo + search + count + view toggle ── */}
+        {/* ── Row 1: logo + count + view toggle ── */}
         <div className="flex items-center gap-3 px-4 py-2.5">
           <span className="font-bold text-slate-800 text-base tracking-tight shrink-0">
-            Primary School Hunt for PR
-          </span>
-
-          <div className="flex-1 max-w-xs">
-            <input
-              type="search"
-              placeholder="Search school…"
-              value={filters.search}
-              onChange={e => set('search', e.target.value)}
-              className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 bg-slate-50"
-            />
-          </div>
-
-          <span className="text-xs text-slate-400 shrink-0 hidden sm:block">
-            {resultCount}/{total}
+            School Hunt for PR kids
           </span>
 
           <div className="flex rounded-lg border border-slate-200 overflow-hidden shrink-0 ml-auto">
@@ -688,11 +674,11 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
         {/* ── Row 2: desktop — five pill dropdowns; mobile — single Filters button ── */}
         <div className="px-4 pb-2.5">
 
-          {/* Mobile Filters button — hidden on md+ */}
+          {/* Mobile Filters button + search — hidden on md+ */}
           <div className="flex items-center gap-2 md:hidden">
             <button
               onClick={() => setSheetOpen(true)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border transition-colors shrink-0 ${
                 activeCount > 0
                   ? 'bg-slate-800 text-white border-slate-800'
                   : 'bg-white text-slate-600 border-slate-200'
@@ -701,8 +687,14 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
               <SlidersHorizontal size={14} />
               {activeCount > 0 ? `Filters · ${activeCount}` : 'Filters'}
             </button>
-            {/* Inline result count on mobile since sm: count is hidden when crowded */}
-            <span className="text-xs text-slate-400 ml-1">
+            <input
+              type="search"
+              placeholder="Search school…"
+              value={filters.search}
+              onChange={e => set('search', e.target.value)}
+              className="flex-1 min-w-0 px-3 py-1.5 text-sm rounded-full border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 bg-slate-50"
+            />
+            <span className="text-xs text-slate-400 shrink-0">
               {resultCount}/{total}
             </span>
           </div>
@@ -728,6 +720,16 @@ export default function FilterBar({ filters, onChange, view, onViewChange, resul
               value={filters.psf}
               onChange={v => set('psf', v)}
             />
+            <input
+              type="search"
+              placeholder="Search school…"
+              value={filters.search}
+              onChange={e => set('search', e.target.value)}
+              className="ml-auto w-48 px-3 py-1.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 bg-slate-50"
+            />
+            <span className="text-xs text-slate-400 shrink-0">
+              {resultCount}/{total}
+            </span>
           </div>
         </div>
       </div>
