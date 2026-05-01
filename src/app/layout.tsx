@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'PR School Hunt — Find your school, find your home',
+  title: 'Primary School Hunt for PR — Find your school, find your home',
   description: 'Discover primary schools accessible to Singapore PRs, with Phase 2C ballot history and nearby property data.',
 }
 
