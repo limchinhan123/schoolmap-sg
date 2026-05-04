@@ -20,6 +20,15 @@
 
 For PR parents, the Primary 1 (P1) registration exercise (specifically Phase 2C) is fiercely competitive. While Singapore Citizens (SCs) receive priority, PRs can still secure spots in certain schools—if they know where to look. This tool synthesizes historical MOE ballot data, school quality indicators, and live property transactions to help parents make informed, data-backed decisions on where to rent or buy.
 
+## 📸 Screenshots
+
+<div align="center">
+  <img src="docs/screenshot-map.png" alt="SchoolMap SG — Interactive Map View showing all 179 schools across Singapore, colour-coded by PR accessibility" width="100%" />
+  <p><em>Interactive map view — 179 schools across Singapore, colour-coded by PR accessibility (Green = good chance, Amber = limited, Orange = rare, Grey = SC-only)</em></p>
+</div>
+
+---
+
 ## ✨ Key Features
 
 - **PR Accessibility Scoring:** Schools are color-coded (Green, Amber, Orange, Grey) based on 3 years of historical Phase 2C ballot data, indicating the real probability of a PR securing a spot.
