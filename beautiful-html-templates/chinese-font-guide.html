@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中文字体配对指南 · Chinese Font Pairings for beautiful-html-templates</title>
+
+<!-- Google Fonts: Latin reference faces + online-available CJK fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&family=Long+Cang&family=Zhi+Mang+Xing&family=LXGW+WenKai+TC&family=Alfa+Slab+One&family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Caveat+Brush&family=Instrument+Serif:ital@0;1&family=Playfair+Display:wght@400;700;900&family=Inter:wght@400;500;700;900&family=DM+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&family=Archivo+Narrow:wght@400;500;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<!-- Smiley Sans Oblique via cn-fontsource CDN -->
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-smiley-sans-oblique-regular/font.css" rel="stylesheet">
+<!-- Yozai via cn-fontsource -->
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-yozai-regular/font.css" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #F5F1E8;
+    --paper-warm: #ECE5D2;
+    --ink: #1A1A1A;
+    --ink-soft: #444;
+    --muted: #888;
+    --accent: #C8442A;
+    --rule: #1A1A1A;
+    --highlight: #FFF3B0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============== HERO ============== */
+  .hero {
+    padding: 96px 80px 64px;
+    border-bottom: 3px solid var(--rule);
+    background: var(--paper);
+  }
+  .hero .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .hero h1 .zh {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    line-height: 1.18; /* CJK needs more breathing room */
+  }
+  .hero p.lede {
+    font-size: 20px;
+    line-height: 1.6;
+    max-width: 720px;
+    color: var(--ink-soft);
+    margin-top: 24px;
+  }
+  .hero .toc {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+  }
+  .hero .toc a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 2px;
+    transition: background 0.15s;
+  }
+  .hero .toc a:hover { background: var(--highlight); }
+
+  /* ============== SECTIONS ============== */
+  section {
+    padding: 80px 80px 64px;
+    border-bottom: 3px solid var(--rule);
+  }
+  section h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 56px;
+    line-height: 1.0;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+  }
+  section h2 .zh {
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1.18;
+  }
+  section .section-intro {
+    max-width: 800px;
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-bottom: 56px;
+  }
+
+  /* ============== UNIVERSAL RULES ============== */
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 32px;
+  }
+  .rule {
+    border: 2px solid var(--ink);
+    padding: 28px;
+    background: var(--paper-warm);
+  }
+  .rule .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .rule h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .rule p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+  }
+  .rule .demo {
+    background: #fff;
+    border: 1px solid var(--ink);
+    padding: 16px;
+    font-size: 15px;
+  }
+  .rule .demo .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .rule .demo .bad {
+    color: #B7281C;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .rule .demo .good {
+    color: #1F8A4C;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .rule .demo + .label-row { margin-top: 12px; }
+
+  /* line-height comparison */
+  .lh-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .lh-compare > div {
+    background: #fff;
+    padding: 12px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 15px;
+  }
+  .lh-compare .lh-tight { line-height: 1.2; }
+  .lh-compare .lh-loose { line-height: 1.7; }
+  .lh-compare .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* ============== PAIRING CARDS ============== */
+  .pairings {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .pairing {
+    border: 3px solid var(--ink);
+    background: #fff;
+    overflow: hidden;
+  }
+  .pairing-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .pairing-header .name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 24px;
+  }
+  .pairing-header .name .zh {
+    font-family: 'Noto Serif SC', serif;
+    margin-right: 12px;
+  }
+  .pairing-header .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .pairing-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .specimen {
+    padding: 40px 32px;
+  }
+  .specimen.latin {
+    background: var(--paper);
+    border-right: 3px solid var(--ink);
+  }
+  .specimen.cjk {
+    background: var(--paper-warm);
+  }
+  .specimen .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .specimen .label strong {
+    color: var(--accent);
+  }
+  .specimen .display {
+    font-size: 56px;
+    line-height: 1.0;
+    margin-bottom: 16px;
+  }
+  .specimen.cjk .display {
+    line-height: 1.18; /* universal CJK rule */
+  }
+  .specimen .body {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .specimen.cjk .body {
+    line-height: 1.85; /* universal CJK rule for body */
+  }
+  .pairing-notes {
+    background: var(--paper);
+    border-top: 3px solid var(--ink);
+    padding: 20px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .pairing-notes .tag {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 4px 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .pairing-notes .note {
+    flex: 1;
+    min-width: 240px;
+  }
+
+  /* Per-pairing font assignments */
+  .p-tech .latin .display { font-family: 'Inter', sans-serif; font-weight: 900; letter-spacing: -0.02em; }
+  .p-tech .cjk .display { font-family: 'Noto Sans SC', sans-serif; font-weight: 900; }
+
+  .p-brand .latin .display { font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+  .p-brand .cjk .display { font-family: 'Smiley Sans Oblique', 'Noto Sans SC', sans-serif; font-weight: 400; font-style: italic; }
+
+  .p-guochao .latin .display { font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic; }
+  .p-guochao .cjk .display { font-family: 'Ma Shan Zheng', cursive; font-size: 64px; }
+  .p-guochao .cjk .body { font-family: 'Noto Serif SC', serif; }
+
+  .p-literary .latin .display { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 64px; }
+  .p-literary .cjk .display { font-family: 'LXGW WenKai TC', serif; font-size: 56px; }
+  .p-literary .cjk .body { font-family: 'Noto Serif SC', serif; }
+
+  .p-playful .latin .display { font-family: 'Caveat Brush', cursive; font-size: 72px; line-height: 0.95; }
+  .p-playful .cjk .display { font-family: 'ZCOOL KuaiLe', cursive; font-size: 56px; }
+  .p-playful .cjk .body { font-family: 'Yozai', sans-serif; }
+
+  .p-food .latin .display { font-family: 'Caveat Brush', cursive; font-size: 72px; line-height: 0.95; }
+  .p-food .cjk .display { font-family: 'ZCOOL KuaiLe', cursive; font-size: 56px; }
+  .p-food .cjk .body { font-family: 'Yozai', sans-serif; }
+
+  .p-wenyi .latin .display { font-family: 'Playfair Display', serif; font-weight: 400; font-style: italic; }
+  .p-wenyi .cjk .display { font-family: 'ZCOOL XiaoWei', serif; font-size: 56px; }
+  .p-wenyi .cjk .body { font-family: 'Noto Serif SC', serif; }
+
+  .p-minimal .latin .display { font-family: 'Space Grotesk', sans-serif; font-weight: 500; letter-spacing: -0.02em; }
+  .p-minimal .cjk .display { font-family: 'Noto Sans SC', sans-serif; font-weight: 700; }
+
+  .p-slab .latin .display { font-family: 'Alfa Slab One', serif; font-size: 56px; letter-spacing: -0.01em; text-transform: uppercase; }
+  .p-slab .cjk .display { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 60px; }
+
+  .p-grotesque .latin .display { font-family: 'Archivo Black', sans-serif; font-size: 56px; letter-spacing: -0.02em; text-transform: uppercase; }
+  .p-grotesque .cjk .display { font-family: 'Noto Sans SC', sans-serif; font-weight: 900; }
+
+  .p-script .latin .display { font-family: 'Caveat Brush', cursive; font-size: 72px; line-height: 0.95; }
+  .p-script .cjk .display { font-family: 'Ma Shan Zheng', cursive; font-size: 56px; }
+  .p-script .cjk .body { font-family: 'LXGW WenKai TC', serif; }
+
+  /* Default body styling for all pairings (overridable above) */
+  .latin .body { font-family: 'Inter', sans-serif; }
+  .cjk .body { font-family: 'Noto Sans SC', sans-serif; }
+
+  /* ============== TEMPLATE MAPPING TABLE ============== */
+  .template-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 3px solid var(--ink);
+    background: #fff;
+  }
+  .template-table thead th {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 16px;
+    text-align: left;
+    border-right: 1px solid var(--paper-warm);
+  }
+  .template-table tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--ink-soft);
+    border-right: 1px solid var(--paper-warm);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  .template-table tbody tr:nth-child(odd) td { background: var(--paper); }
+  .template-table tbody tr:nth-child(even) td { background: var(--paper-warm); }
+  .template-table .template-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .template-table .cn-display {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+  }
+
+  /* ============== RESOURCES ============== */
+  .resources {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .resource-card {
+    border: 2px solid var(--ink);
+    padding: 24px;
+    background: var(--paper-warm);
+  }
+  .resource-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .resource-card p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+  .resource-card code {
+    display: block;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 10px 12px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+  .resource-card a {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+  }
+
+  /* ============== FOOTER ============== */
+  footer {
+    padding: 48px 80px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  /* ============== MIXED CONTENT DEMOS ============== */
+  .mix-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 3px solid var(--ink);
+    background: #fff;
+  }
+  .mix-table thead th {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-right: 1px solid var(--paper-warm);
+    vertical-align: top;
+  }
+  .mix-table thead th:first-child { width: 200px; }
+  .mix-table tbody td {
+    padding: 20px 16px;
+    border-bottom: 1px solid var(--ink-soft);
+    border-right: 1px solid var(--paper-warm);
+    vertical-align: top;
+  }
+  .mix-table tbody td:first-child {
+    background: var(--paper-warm);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .mix-table .verdict {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    display: inline-block;
+    margin-top: 12px;
+  }
+  .verdict.good { background: #1F8A4C; color: #fff; }
+  .verdict.ok { background: #F5C518; color: #1a1a1a; }
+  .verdict.bad { background: #B7281C; color: #fff; }
+  .mix-table .specimen-text {
+    font-size: 22px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  .mix-strategy {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Strategy renderings — note that "system fallback only" deliberately uses Latin face with no CJK to force browser fallback */
+  .s-cjk-only-sans { font-family: 'Noto Sans SC', sans-serif; }
+  .s-cjk-only-serif { font-family: 'Noto Serif SC', serif; }
+  .s-latin-only { font-family: 'Inter', sans-serif; /* no CJK fallback — browser uses system */ }
+  .s-paired-sans { font-family: 'Inter', 'Noto Sans SC', sans-serif; }
+  .s-paired-serif { font-family: 'Playfair Display', 'Noto Serif SC', serif; }
+  .s-broken { font-family: 'Caveat Brush', cursive; /* no CJK */ }
+  .s-script { font-family: 'ZCOOL KuaiLe', cursive; /* questionable Latin */ }
+  .s-wenkai { font-family: 'LXGW WenKai TC', serif; }
+
+  /* Display-scale mixed demo */
+  .display-mix {
+    border: 3px solid var(--ink);
+    margin-top: 32px;
+    background: #fff;
+  }
+  .display-mix .row {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 32px 40px;
+    border-bottom: 1px solid var(--ink-soft);
+  }
+  .display-mix .row:last-child { border-bottom: none; }
+  .display-mix .row .strategy-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .display-mix .row .strategy-label strong { color: var(--accent); }
+  .display-mix .row .text {
+    font-size: 48px;
+    line-height: 1.2;
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .hero, section, footer { padding: 48px 24px; }
+    .pairing-body { grid-template-columns: 1fr; }
+    .specimen.latin { border-right: none; border-bottom: 3px solid var(--ink); }
+    .specimen .display { font-size: 40px; }
+    section h2 { font-size: 36px; }
+    .hero h1 { font-size: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== HERO ============== -->
+<div class="hero">
+  <div class="kicker">A pairing guide · beautiful-html-templates · v1</div>
+  <h1>
+    Chinese Font<br>
+    <span class="zh">中文字体配对指南</span>
+  </h1>
+  <p class="lede">
+    A reference for adapting the 34 templates in the library to Chinese content. Each pairing shows the original Latin aesthetic on the left and the recommended Chinese counterpart on the right, with universal CJK rules applied (looser line-height, no mixed-font sentences, no uppercase or letter-spacing on CJK glyphs).
+  </p>
+  <p class="lede" style="margin-top:12px; font-family:'Noto Sans SC', sans-serif; line-height:1.85;">
+    本指南为 beautiful-html-templates 中的 34 款模板提供中文配对建议。每个示例左侧为模板的原始拉丁字体风格，右侧为推荐的中文字体替代方案，并应用了通用 CJK 规则：更宽松的行高、避免一句之内字体切换、不在中文上使用大写或字距调整。
+  </p>
+  <div class="toc">
+    <a href="#rules">通用规则</a>
+    <a href="#mixed">中英混排</a>
+    <a href="#pairings">风格配对</a>
+    <a href="#templates">模板映射</a>
+    <a href="#resources">CDN 资源</a>
+  </div>
+</div>
+
+<!-- ============== UNIVERSAL RULES ============== -->
+<section id="rules">
+  <h2>
+    Universal CJK Rules<br>
+    <span class="zh" style="font-size:36px;">通用中文排版规则</span>
+  </h2>
+  <p class="section-intro">
+    Four rules that apply to every Chinese rendering, regardless of which font system you choose. These are the difference between Chinese type that looks designed and Chinese type that looks like it was rendered in a hurry.
+  </p>
+
+  <div class="rules">
+    <div class="rule">
+      <div class="num">RULE 01</div>
+      <h3>Looser line-height · 加大行高</h3>
+      <p>Chinese glyphs are square and visually full — they crowd vertically more than Latin. Body text needs line-height ≈ 1.7–1.85 (vs. 1.5–1.6 for Latin). Display text needs ≈ 1.15–1.25 (vs. 0.9–1.0 for Latin).</p>
+      <div class="lh-compare">
+        <div>
+          <div class="tag">❌ Latin spec (1.2)</div>
+          <div class="lh-tight">不要让汉字像英文一样紧凑排版，否则上下笔画很容易撞在一起，整体显得拥挤局促。</div>
+        </div>
+        <div>
+          <div class="tag">✅ CJK spec (1.7)</div>
+          <div class="lh-loose">不要让汉字像英文一样紧凑排版，否则上下笔画很容易撞在一起，整体显得拥挤局促。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="num">RULE 02</div>
+      <h3>One font per sentence · 一句之内不混字体</h3>
+      <p>Pick a CJK font that has decent Latin coverage, or pair it with a Latin face whose proportions match. Avoid having the browser pick a random fallback for Latin characters inside a Chinese sentence — that mid-sentence switch always looks broken.</p>
+      <div class="demo">
+        <div class="label">❌ Mixed (browser font-switches inside the sentence)</div>
+        <div class="bad" style="font-family:'Times New Roman', 'Noto Sans SC', sans-serif;">使用 Claude 3.5 Sonnet 模型处理 200K tokens 的上下文。</div>
+        <div class="label" style="margin-top:12px;">✅ Single family with Latin coverage</div>
+        <div class="good">使用 Claude 3.5 Sonnet 模型处理 200K tokens 的上下文。</div>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="num">RULE 03</div>
+      <h3>No tracking · 不要字距</h3>
+      <p>Letter-spacing that looks tight and editorial on Latin glyphs looks broken on square CJK characters. Tracking creates uneven gaps between strokes that the eye reads as random whitespace, not rhythm.</p>
+      <div class="demo">
+        <div class="label">❌ With letter-spacing</div>
+        <div class="bad" style="letter-spacing:0.12em;">中 文 字 体 不 应 该 使 用 字 距</div>
+        <div class="label" style="margin-top:12px;">✅ No letter-spacing</div>
+        <div class="good">中文字体不应该使用字距</div>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="num">RULE 04</div>
+      <h3>Full-width punctuation · 全角标点</h3>
+      <p>Chinese uses full-width punctuation: ，。：；！？「」（）— never force half-width punctuation in Chinese content. Full-width marks carry their own spacing; mixing in half-width creates uneven gaps.</p>
+      <div class="demo">
+        <div class="label">❌ Half-width punctuation</div>
+        <div class="bad">我们的产品,主要面向亚太市场:中国,日本,韩国.</div>
+        <div class="label" style="margin-top:12px;">✅ Full-width punctuation</div>
+        <div class="good">我们的产品，主要面向亚太市场：中国、日本、韩国。</div>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="num">RULE 05</div>
+      <h3>Space between CJK and Latin · 中英之间加空格</h3>
+      <p>Insert a regular ASCII space between every Chinese character and adjacent Latin character or digit (sometimes called "盘古之白" / Pangu spacing). Without it, the eye can't separate words from glyphs and the line reads as crowded. The space also lets the browser pick better line-break points.</p>
+      <div class="demo">
+        <div class="label">❌ No space between CJK and Latin</div>
+        <div class="bad">使用Claude3.5Sonnet处理200Ktokens的上下文，延迟低于100ms。</div>
+        <div class="label" style="margin-top:12px;">✅ Space between CJK and Latin</div>
+        <div class="good">使用 Claude 3.5 Sonnet 处理 200K tokens 的上下文，延迟低于 100ms。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== MIXED CONTENT HANDLING ============== -->
+<section id="mixed">
+  <h2>
+    Mixed CJK + Latin Handling<br>
+    <span class="zh" style="font-size:36px;">中英混排处理</span>
+  </h2>
+  <p class="section-intro">
+    Real Chinese decks rarely contain pure Chinese — brand names, model names, technical terms, numbers, and units constantly mix in. How those mixed sentences render depends entirely on the <code style="background:#fff3b0; padding:1px 6px;">font-family</code> chain you set. There are three viable strategies and several traps. The demos below use realistic content from the kinds of decks this library produces (AI, product, financial, technical).
+  </p>
+
+  <h3 style="font-family:'Playfair Display', serif; font-weight:700; font-size:28px; margin-bottom:8px;">Strategy comparison · 策略对比</h3>
+  <p style="font-size:15px; color:var(--ink-soft); margin-bottom:24px; max-width:800px;">Same sentence, four different <code style="background:#fff3b0; padding:1px 6px;">font-family</code> declarations. Notice where the Latin glyphs jump, where baselines misalign, where characters disappear entirely.</p>
+
+  <table class="mix-table">
+    <thead>
+      <tr>
+        <th>Strategy / font-family</th>
+        <th>Rendered specimen</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <td>
+          <strong>A · CJK font only (sans)</strong><br>
+          <code style="font-size:11px;">'Noto Sans SC',<br>sans-serif</code>
+          <span class="verdict good">Recommended</span>
+        </td>
+        <td>
+          <div class="mix-strategy">Sentence 1 — technical brand mix</div>
+          <div class="specimen-text s-cjk-only-sans">使用 Claude 3.5 Sonnet 处理 200K tokens 的上下文，延迟低于 100ms。</div>
+          <div class="mix-strategy" style="margin-top:20px;">Sentence 2 — product comparison</div>
+          <div class="specimen-text s-cjk-only-sans">Notion AI 与 ChatGPT 的功能对比：API 接口、RAG 支持、上下文长度。</div>
+          <div style="margin-top:12px; font-size:13px; color:var(--ink-soft);">Both CJK and Latin render in Noto Sans SC's glyphs. Latin is slightly heavier than dedicated Latin faces but consistent across all platforms.</div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <strong>B · CJK font only (serif)</strong><br>
+          <code style="font-size:11px;">'Noto Serif SC',<br>serif</code>
+          <span class="verdict good">Recommended</span>
+        </td>
+        <td>
+          <div class="mix-strategy">Sentence 1 — technical brand mix</div>
+          <div class="specimen-text s-cjk-only-serif">使用 Claude 3.5 Sonnet 处理 200K tokens 的上下文，延迟低于 100ms。</div>
+          <div class="mix-strategy" style="margin-top:20px;">Sentence 2 — product comparison</div>
+          <div class="specimen-text s-cjk-only-serif">Notion AI 与 ChatGPT 的功能对比：API 接口、RAG 支持、上下文长度。</div>
+          <div style="margin-top:12px; font-size:13px; color:var(--ink-soft);">Same approach in serif. Noto Serif SC includes a transitional serif for Latin that pairs naturally with the Chinese glyphs.</div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <strong>C · Latin first, CJK fallback</strong><br>
+          <code style="font-size:11px;">'Inter',<br>'Noto Sans SC',<br>sans-serif</code>
+          <span class="verdict ok">For premium typography</span>
+        </td>
+        <td>
+          <div class="mix-strategy">Sentence 1 — technical brand mix</div>
+          <div class="specimen-text s-paired-sans">使用 Claude 3.5 Sonnet 处理 200K tokens 的上下文，延迟低于 100ms。</div>
+          <div class="mix-strategy" style="margin-top:20px;">Sentence 2 — product comparison</div>
+          <div class="specimen-text s-paired-sans">Notion AI 与 ChatGPT 的功能对比：API 接口、RAG 支持、上下文长度。</div>
+          <div style="margin-top:12px; font-size:13px; color:var(--ink-soft);">The browser uses Inter for Latin glyphs and falls through to Noto Sans SC for CJK. Latin looks better. <strong>Tradeoff:</strong> baselines and weights may not match perfectly at the join — examine carefully at display sizes.</div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <strong>C-serif · Latin serif + CJK serif</strong><br>
+          <code style="font-size:11px;">'Playfair Display',<br>'Noto Serif SC',<br>serif</code>
+          <span class="verdict ok">For literary templates</span>
+        </td>
+        <td>
+          <div class="mix-strategy">Sentence — literary lede</div>
+          <div class="specimen-text s-paired-serif">A short trajectory，五个停靠点。从 prototype 到 production，每一段都有它的注脚。</div>
+          <div style="margin-top:12px; font-size:13px; color:var(--ink-soft);">High-contrast Playfair Display Latin + Noto Serif SC CJK. The pairing works because both faces share an editorial register. Use for literary / editorial templates only.</div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <strong>D · Latin only, no CJK fallback</strong><br>
+          <code style="font-size:11px;">'Inter',<br>sans-serif</code>
+          <span class="verdict bad">Broken</span>
+        </td>
+        <td>
+          <div class="mix-strategy">Sentence — same content</div>
+          <div class="specimen-text s-latin-only">使用 Claude 3.5 Sonnet 处理 200K tokens 的上下文，延迟低于 100ms。</div>
+          <div style="margin-top:12px; font-size:13px; color:var(--ink-soft);"><strong>Latin in Inter, CJK in browser default fallback</strong> — typically PingFang SC on macOS, Microsoft YaHei on Windows, Noto Sans CJK on Linux. The output looks completely different across operating systems. Don't ship this.</div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <strong>E · Decorative CJK with bad Latin</strong><br>
+          <code style="font-size:11px;">'ZCOOL KuaiLe',<br>cursive</code>
+          <span class="verdict bad">Avoid for mixed content</span>
+        </td>
+        <td>
+          <div class="mix-strategy">Sentence — same content</div>
+          <div class="specimen-text s-script">使用 Claude 3.5 Sonnet 处理 200K tokens 的上下文，延迟低于 100ms。</div>
+          <div style="margin-top:12px; font-size:13px; color:var(--ink-soft);">站酷快乐体 has limited Latin coverage; browser font-switches mid-sentence to a different sans for the English fragments. Most decorative CJK fonts behave this way. If you must use them for headlines, keep mixed content out of those headlines.</div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <strong>F · Decorative cursive (no CJK)</strong><br>
+          <code style="font-size:11px;">'Caveat Brush',<br>cursive</code>
+          <span class="verdict bad">Catastrophic</span>
+        </td>
+        <td>
+          <div class="mix-strategy">Sentence — same content</div>
+          <div class="specimen-text s-broken">使用 Claude 3.5 Sonnet 处理 200K tokens 的上下文，延迟低于 100ms。</div>
+          <div style="margin-top:12px; font-size:13px; color:var(--ink-soft);">Caveat Brush has zero CJK. The Latin words render in the cursive face, the Chinese characters render in whatever the OS picks. The two halves of the sentence look like they were typeset by different studios.</div>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <h3 style="font-family:'Playfair Display', serif; font-weight:700; font-size:28px; margin: 56px 0 8px;">Display-scale mixed headlines · 大字号混排</h3>
+  <p style="font-size:15px; color:var(--ink-soft); margin-bottom:24px; max-width:800px;">The problems get more visible at display sizes (40px+) where the eye notices baseline mismatches and weight inconsistencies. Same sentence, three strategies:</p>
+
+  <div class="display-mix">
+    <div class="row">
+      <div class="strategy-label">Strategy A · <strong>Noto Sans SC only</strong> — consistent, recommended default</div>
+      <div class="text s-cjk-only-sans">为 AI Agent 设计的新一代 Platform</div>
+    </div>
+    <div class="row">
+      <div class="strategy-label">Strategy C · <strong>Inter + Noto Sans SC fallback</strong> — elegant Latin, watch for baseline mismatch</div>
+      <div class="text s-paired-sans">为 AI Agent 设计的新一代 Platform</div>
+    </div>
+    <div class="row">
+      <div class="strategy-label">Broken · <strong>Inter only</strong> — CJK renders in browser default, varies by OS</div>
+      <div class="text s-latin-only">为 AI Agent 设计的新一代 Platform</div>
+    </div>
+    <div class="row">
+      <div class="strategy-label">Broken · <strong>Caveat Brush only</strong> — script with no CJK, hybrid disaster</div>
+      <div class="text s-broken">为 AI Agent 设计的新一代 Platform</div>
+    </div>
+  </div>
+
+  <h3 style="font-family:'Playfair Display', serif; font-weight:700; font-size:28px; margin: 56px 0 8px;">Recommendation · 推荐</h3>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:1000px;">
+    <div style="border:2px solid var(--ink); padding:24px; background:var(--paper-warm);">
+      <div style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--accent); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.1em;">Default (90% of templates)</div>
+      <h4 style="font-family:'Playfair Display', serif; font-weight:700; font-size:22px; margin-bottom:12px;">Strategy A — Single CJK family</h4>
+      <p style="font-size:14px; line-height:1.6; color:var(--ink-soft);">Use <code style="background:#fff; padding:1px 6px;">'Noto Sans SC'</code> or <code style="background:#fff; padding:1px 6px;">'Noto Serif SC'</code> as the sole family. Both have full Latin coverage. Consistent across platforms, no baseline issues, no font-switching.</p>
+    </div>
+    <div style="border:2px solid var(--ink); padding:24px; background:var(--paper-warm);">
+      <div style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--accent); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.1em;">For literary / editorial templates</div>
+      <h4 style="font-family:'Playfair Display', serif; font-weight:700; font-size:22px; margin-bottom:12px;">Strategy C — Latin first, CJK fallback</h4>
+      <p style="font-size:14px; line-height:1.6; color:var(--ink-soft);"><code style="background:#fff; padding:1px 6px;">'Latin Font', 'Noto Sans/Serif SC', fallback</code>. Use only when the template's Latin face has a strong identity that you want to preserve for English words. Inspect display headlines carefully for baseline mismatch.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:32px; padding:20px 24px; background:#fff3b0; border:2px solid var(--ink); max-width:1000px;">
+    <strong style="font-family:'Playfair Display', serif; font-size:18px;">Hard rule:</strong>
+    <span style="font-size:15px; line-height:1.6;">Never use a CJK font that lacks Latin coverage (like 站酷快乐体, 马善政毛笔楷书) for any text that contains Latin characters. Reserve those decorative faces for pure-Chinese headlines.</span>
+  </div>
+</section>
+
+<!-- ============== PAIRINGS BY STYLE ============== -->
+<section id="pairings">
+  <h2>
+    Pairings by Style<br>
+    <span class="zh" style="font-size:36px;">按风格分类的字体配对</span>
+  </h2>
+  <p class="section-intro">
+    Ten style categories covering the aesthetic range of the template library. For each, the Latin specimen represents the kind of vibe the original template carries; the Chinese specimen shows the recommended font (loaded from Google Fonts or cn-fontsource CDN) rendering the same idea.
+  </p>
+
+  <div class="pairings">
+
+    <!-- TECH -->
+    <div class="pairing p-tech">
+      <div class="pairing-header">
+        <div class="name">Tech &amp; Geometric &nbsp;·&nbsp; <span class="zh">科技 / 几何</span></div>
+        <div class="meta">For: cobalt-grid · neo-grid-bold · 8-bit-orbit · signal · stencil-tablet</div>
+      </div>
+      <div class="pairing-body">
+        <div class="specimen latin">
+          <div class="label">Latin · <strong>Inter 900</strong></div>
+          <div class="display">A new platform for serious work.</div>
+          <div class="body">A neutral, geometric sans built for product interfaces and engineering decks. Crisp at every weight, distinctive at none.</div>
+        </div>
+        <div class="specimen cjk">
+          <div class="label">CJK · <strong>思源黑体 Noto Sans SC</strong></div>
+          <div class="display">为严肃工作打造的新平台</div>
+          <div class="body">现代中性的几何无衬线，适合产品界面和工程主题演讲。7 种字重，在线可用，万能的科技场景字体。</div>
+        </div>
+      </div>
+      <div class="pairing-notes">
+        <span class="tag">Online</span>
+        <div class="note">Noto Sans SC is the safest universal choice. Vary weight (400 → 700 → 900) rather than swapping fonts. Free, OFL-1.1.</div>
+      </div>
+    </div>
+
+    <!-- BRAND -->
+    <div class="pairing p-brand">
+      <div class="pairing-header">
+        <div class="name">Brand &amp; Bold Statement &nbsp;·&nbsp; <span class="zh">品牌 / 商务</span></div>
+        <div class="meta">For: bold-poster · blue-professional · peoples-platform · biennale-yellow</div>
+      </div>
+      <div class="pairing-body">
+        <div class="specimen latin">
+          <div class="label">Latin · <strong>Inter 800 (italic)</strong></div>
+          <div class="display"><em>Make your move.</em></div>
+          <div class="body">A confident brand voice for keynotes, product launches, and annual reports. Reads as decisive without being aggressive.</div>
+        </div>
+        <div class="specimen cjk">
+          <div class="label">CJK · <strong>得意黑 Smiley Sans Oblique</strong></div>
+          <div class="display">出手就是关键</div>
+          <div class="body" style="font-family:'Noto Serif SC';">斜体加楷体气质的现代品牌字，B 站爆火的设计感字体。辨识度高，适合创意品牌发布、年度汇报等场景。正文搭配思源宋体增加品牌厚度。</div>
+        </div>
+      </div>
+      <div class="pairing-notes">
+        <span class="tag">Online</span>
+        <div class="note">得意黑 (Smiley Sans Oblique) is the highest-recognition Chinese display face. Pairs with Noto Sans SC for body. Free, OFL-1.1.</div>
+      </div>
+    </div>
+
+    <!-- GUOCHAO / TRADITIONAL -->
+    <div class="pairing p-guochao">
+      <div class="pairing-header">
+        <div class="name">Traditional &amp; Guochao &nbsp;·&nbsp; <span class="zh">文化 / 国潮</span></div>
+        <div class="meta">For: editorial-forest · grove · emerald-editorial · soft-editorial</div>
+      </div>
+      <div class="pairing-body">
+        <div class="specimen latin">
+          <div class="label">Latin · <strong>Playfair Display 700 (italic)</strong></div>
+          <div class="display"><em>Of an older school.</em></div>
+          <div class="body">High-contrast serif with editorial gravitas. Borrows from 18th-century printing traditions.</div>
+        </div>
+        <div class="specimen cjk">
+          <div class="label">CJK · <strong>马善政毛笔楷书 Ma Shan Zheng + 思源宋体 Noto Serif SC</strong></div>
+          <div class="display">古意盎然</div>
+          <div class="body" style="font-family:'Noto Serif SC';">毛笔楷书的书法气质搭配思源宋体的沉稳：标题制造文化感，正文保证可读。适合传统文化、国风设计、古典主题的场景。</div>
+        </div>
+      </div>
+      <div class="pairing-notes">
+        <span class="tag">Online</span>
+        <div class="note">Title: 马善政毛笔楷书 (controlled brush calligraphy) — more readable than wild-grass cursive 刘建毛草. Alternative: 志莽行 (Zhi Mang Xing, running script). Body: 思源宋体. All OFL-1.1.</div>
+      </div>
+    </div>
+
+    <!-- LITERARY / EDITORIAL -->
+    <div class="pairing p-literary">
+      <div class="pairing-header">
+        <div class="name">Literary Editorial &nbsp;·&nbsp; <span class="zh">文艺 / 阅读</span></div>
+        <div class="meta">For: editorial-tri-tone · soft-editorial · vellum · pink-script · broadside</div>
+      </div>
+      <div class="pairing-body">
+        <div class="specimen latin">
+          <div class="label">Latin · <strong>Instrument Serif (italic)</strong></div>
+          <div class="display"><em>a quieter kind of attention.</em></div>
+          <div class="body">A magazine voice. Italic display serif paired with grotesque body — the typographic rhythm of a literary publication.</div>
+        </div>
+        <div class="specimen cjk">
+          <div class="label">CJK · <strong>霞鹜文楷 LXGW WenKai + 思源宋体 Noto Serif SC</strong></div>
+          <div class="display">一种安静的注意力</div>
+          <div class="body" style="font-family:'Noto Serif SC';">霞鹜文楷温润的楷体气质搭配思源宋体的端正，正是文艺杂志的排版节奏。适合读书分享、文学主题、内容型演讲。</div>
+        </div>
+      </div>
+      <div class="pairing-notes">
+        <span class="tag">Online</span>
+        <div class="note">霞鹜文楷 (LXGW WenKai) is the most popular open-source Chinese font for reading. Pairs beautifully with 思源宋体. Both OFL-1.1.</div>
+      </div>
+    </div>
+
+    <!-- PLAYFUL -->
+    <div class="pairing p-playful">
+      <div class="pairing-header">
+        <div class="name">Playful &amp; Friendly &nbsp;·&nbsp; <span class="zh">轻松 / 活泼</span></div>
+        <div class="meta">For: playful · daisy-days · scatterbrain · capsule · coral</div>
+      </div>
+      <div class="pairing-body">
+        <div class="specimen latin">
+          <div class="label">Latin · <strong>Caveat Brush</strong></div>
+          <div class="display">say hi to everyone.</div>
+          <div class="body">A warm, hand-painted display face. Used sparingly as the "human interrupt" in otherwise structured layouts.</div>
+        </div>
+        <div class="specimen cjk">
+          <div class="label">CJK · <strong>站酷快乐体 ZCOOL KuaiLe + 悠哉字体 Yozai</strong></div>
+          <div class="display">和大家打个招呼</div>
+          <div class="body" style="font-family:'Yozai';">活泼手写感的标题搭配日系治愈的悠哉字体正文。温柔活泼但保持可读，适合团建、儿童教育、生活分享、轻松主题。</div>
+        </div>
+      </div>
+      <div class="pairing-notes">
+        <span class="tag">Online</span>
+        <div class="note">站酷快乐体 is more readable than the rounder 站酷庆科黄油体. For more restraint, try 站酷小薇体 (decorative serif). All OFL-1.1.</div>
+      </div>
+    </div>
+
+    <!-- LITERARY FEMININE -->
+    <div class="pairing p-wenyi">
+      <div class="pairing-header">
+        <div class="name">Feminine &amp; Decorative &nbsp;·&nbsp; <span class="zh">柔美 / 装饰</span></div>
+        <div class="meta">For: sakura-chroma · pink-script · daisy-days · capsule</div>
+      </div>
+      <div class="pairing-body">
+        <div class="specimen latin">
+          <div class="label">Latin · <strong>Playfair Display 400 (italic)</strong></div>
+          <div class="display"><em>An ordinary afternoon.</em></div>
+          <div class="body">High-contrast italic serif. Carries a softness that suits beauty, fashion, and lifestyle content without being saccharine.</div>
+        </div>
+        <div class="specimen cjk">
+          <div class="label">CJK · <strong>站酷小薇体 ZCOOL XiaoWei + 思源宋体 Noto Serif SC</strong></div>
+          <div class="display">一个普通的下午</div>
+          <div class="body" style="font-family:'Noto Serif SC';">站酷小薇体笔画末端有优雅装饰，柔美的宋体气质适合女性品牌、时尚主题、美妆与生活方式内容。</div>
+        </div>
+      </div>
+      <div class="pairing-notes">
+        <span class="tag">Online</span>
+        <div class="note">站酷小薇体 carries decorative terminals reminiscent of high-contrast Latin serifs. OFL-1.1.</div>
+      </div>
+    </div>
+
+    <!-- MINIMAL -->
+    <div class="pairing p-minimal">
+      <div class="pairing-header">
+        <div class="name">Minimal &amp; Reporting &nbsp;·&nbsp; <span class="zh">极简 / 报告</span></div>
+        <div class="meta">For: monochrome · long-table · mat · cartesian · studio</div>
+      </div>
+      <div class="pairing-body">
+        <div class="specimen latin">
+          <div class="label">Latin · <strong>Space Grotesk 500</strong></div>
+          <div class="display">Quarterly results, plainly stated.</div>
+          <div class="body">A neutral grotesque that gets out of the way. Use for annual reports, data dashboards, anything where the content is the focus.</div>
+        </div>
+        <div class="specimen cjk">
+          <div class="label">CJK · <strong>思源黑体 Noto Sans SC 700 + 思源宋体 Noto Serif SC</strong></div>
+          <div class="display">季度业绩，平实陈述</div>
+          <div class="body" style="font-family:'Noto Serif SC';">最不出错的中文组合：思源黑体做标题，思源宋体做正文。中性现代，长时间阅读不疲劳。适合年度报告、数据展示、极简风格内容。</div>
+        </div>
+      </div>
+      <div class="pairing-notes">
+        <span class="tag">Online</span>
+        <div class="note">思源黑体 + 思源宋体 (sans title + serif body) is the bulletproof minimal pairing. The serif body adds editorial weight without sacrificing readability. OFL-1.1.</div>
+      </div>
+    </div>
+
+    <!-- NEOBRUTALIST SLAB -->
+    <div class="pairing p-slab">
+      <div class="pairing-header">
+        <div class="name">Heavy Slab &amp; Poster &nbsp;·&nbsp; <span class="zh">厚重海报体</span></div>
+        <div class="meta">For: peoples-platform · creative-mode · biennale-yellow · bold-poster · retro-zine</div>
+      </div>
+      <div class="pairing-body">
+        <div class="specimen latin">
+          <div class="label">Latin · <strong>Alfa Slab One</strong></div>
+          <div class="display">VOTE WITH YOUR WHOLE CHEST.</div>
+          <div class="body">A compressed slab serif at extreme weight — the visual register of WPA posters, political broadsides, and union newsletters.</div>
+        </div>
+        <div class="specimen cjk">
+          <div class="label">CJK · <strong>思源宋体 Noto Serif SC 900</strong></div>
+          <div class="display">全力以赴 投下一票</div>
+          <div class="body" style="font-family:'Noto Serif SC';">思源宋体最重字重 (Black/900) 是中文里最接近厚重海报体的可靠选择。正文也用思源宋体保持厚重一致感。海报字体的张力来自字重而非字形差异。</div>
+        </div>
+      </div>
+      <div class="pairing-notes">
+        <span class="tag">Online</span>
+        <div class="note">No exact online equivalent for Alfa Slab One in Chinese; 思源宋体 900 is the closest CDN-loadable match. Body in 思源宋体 400 keeps the slab/serif feel cohesive. OFL-1.1.</div>
+      </div>
+    </div>
+
+    <!-- HEAVY GROTESQUE -->
+    <div class="pairing p-grotesque">
+      <div class="pairing-header">
+        <div class="name">Heavy Grotesque &amp; Brutalist &nbsp;·&nbsp; <span class="zh">厚重黑体 / 粗野主义</span></div>
+        <div class="meta">For: raw-grid · block-frame · neo-grid-bold · stencil-tablet</div>
+      </div>
+      <div class="pairing-body">
+        <div class="specimen latin">
+          <div class="label">Latin · <strong>Archivo Black</strong></div>
+          <div class="display">BORDERS ARE THE LAYOUT.</div>
+          <div class="body">A heavy black grotesque, always uppercase, always tight. Pairs with hard borders and flat color blocks in the neobrutalist tradition.</div>
+        </div>
+        <div class="specimen cjk">
+          <div class="label">CJK · <strong>思源黑体 Noto Sans SC 900 + 400</strong></div>
+          <div class="display">边框就是排版</div>
+          <div class="body">中文不区分大小写，所以无法照搬"all caps"。改用思源黑体 900 (标题) 与 400 (正文) 的字重对比代替英文里大写与小写的层级关系。完全去掉字距。</div>
+        </div>
+      </div>
+      <div class="pairing-notes">
+        <span class="tag">Online</span>
+        <div class="note">CJK has no case, so weight contrast (900 vs 400) carries the hierarchy that uppercase carries in Latin. Drop letter-spacing entirely. OFL-1.1.</div>
+      </div>
+    </div>
+
+    <!-- BRUSH SCRIPT -->
+    <div class="pairing p-script">
+      <div class="pairing-header">
+        <div class="name">Brush Script &amp; Handwritten &nbsp;·&nbsp; <span class="zh">毛笔 / 手写</span></div>
+        <div class="meta">For: pink-script · creative-mode (accent) · grove (accent)</div>
+      </div>
+      <div class="pairing-body">
+        <div class="specimen latin">
+          <div class="label">Latin · <strong>Caveat Brush</strong></div>
+          <div class="display">a personal note.</div>
+          <div class="body">Used as a "human interrupt" inside otherwise structured layouts — a moment of warmth amid the grid.</div>
+        </div>
+        <div class="specimen cjk">
+          <div class="label">CJK · <strong>马善政毛笔楷书 Ma Shan Zheng + 霞鹜文楷 LXGW WenKai</strong></div>
+          <div class="display">一段私语</div>
+          <div class="body" style="font-family:'LXGW WenKai TC';">马善政毛笔楷书是最正统的中文书法感字体，搭配霞鹜文楷做正文，整体气质温润。注意：中文里的"手写"和拉丁的"手写"美学差距较大——毛笔楷书带有文化与传统的厚重感，与英文 Caveat Brush 的随意感是不同的氛围。</div>
+        </div>
+      </div>
+      <div class="pairing-notes">
+        <span class="tag">Online</span>
+        <div class="note">CJK brush scripts carry strong cultural weight — they read as traditional/literary, not casual. The "vibe" of Latin Caveat Brush doesn't fully transfer; pick based on intent.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============== PER-TEMPLATE MAPPING ============== -->
+<section id="templates">
+  <h2>
+    Per-Template Recommendations<br>
+    <span class="zh" style="font-size:36px;">按模板的推荐配对</span>
+  </h2>
+  <p class="section-intro">
+    Each of the 34 templates mapped to a suggested Chinese title + body pairing. These are starting points — for any given deck, the content's emotional register may pull you toward a different category. <strong>Every font listed loads via a CDN</strong> (Google Fonts, cn-fontsource, or ZSFT) — no local install required, so the rendered deck will look the same on any browser without setup.
+  </p>
+
+  <table class="template-table">
+    <thead>
+      <tr>
+        <th>Template</th>
+        <th>Style Category</th>
+        <th>Title Font · 标题</th>
+        <th>Body Font · 正文</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="template-name">8-bit-orbit</td><td>Pixel / Retro</td><td class="cn-display">思源黑体 Noto Sans SC 900 (pixel CJK has no reliable CDN)</td><td class="cn-display">思源黑体 Noto Sans SC 400</td></tr>
+      <tr><td class="template-name">biennale-yellow</td><td>Brand</td><td class="cn-display">得意黑 Smiley Sans Oblique</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">block-frame</td><td>Neobrutalist</td><td class="cn-display">思源黑体 Noto Sans SC 900</td><td class="cn-display">思源黑体 Noto Sans SC 400</td></tr>
+      <tr><td class="template-name">blue-professional</td><td>Brand / Corporate</td><td class="cn-display">思源黑体 Noto Sans SC 700</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">bold-poster</td><td>Heavy Slab Poster</td><td class="cn-display">思源宋体 Noto Serif SC 900</td><td class="cn-display">思源宋体 Noto Serif SC 400</td></tr>
+      <tr><td class="template-name">broadside</td><td>Editorial Print</td><td class="cn-display">思源宋体 Noto Serif SC 900</td><td class="cn-display">霞鹜文楷 LXGW WenKai</td></tr>
+      <tr><td class="template-name">capsule</td><td>Playful Round</td><td class="cn-display">站酷小薇体 ZCOOL XiaoWei</td><td class="cn-display">悠哉字体 Yozai</td></tr>
+      <tr><td class="template-name">cartesian</td><td>Minimal Geometric</td><td class="cn-display">思源黑体 Noto Sans SC 700</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">cobalt-grid</td><td>Tech / Geometric</td><td class="cn-display">思源黑体 Noto Sans SC 700</td><td class="cn-display">思源黑体 Noto Sans SC 400</td></tr>
+      <tr><td class="template-name">coral</td><td>Friendly / Warm</td><td class="cn-display">站酷小薇体 ZCOOL XiaoWei</td><td class="cn-display">悠哉字体 Yozai</td></tr>
+      <tr><td class="template-name">creative-mode</td><td>Heavy Display / Brutalist</td><td class="cn-display">思源宋体 Noto Serif SC 900</td><td class="cn-display">思源宋体 Noto Serif SC 400</td></tr>
+      <tr><td class="template-name">daisy-days</td><td>Playful / Feminine</td><td class="cn-display">站酷小薇体 ZCOOL XiaoWei</td><td class="cn-display">悠哉字体 Yozai</td></tr>
+      <tr><td class="template-name">editorial-forest</td><td>Literary / Natural</td><td class="cn-display">霞鹜文楷 LXGW WenKai</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">editorial-tri-tone</td><td>Literary Editorial</td><td class="cn-display">站酷小薇体 ZCOOL XiaoWei / 霞鹜文楷</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">emerald-editorial</td><td>Literary</td><td class="cn-display">霞鹜文楷 LXGW WenKai</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">grove</td><td>Literary / Natural</td><td class="cn-display">霞鹜文楷 LXGW WenKai</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">long-table</td><td>Minimal Data</td><td class="cn-display">思源黑体 Noto Sans SC 700</td><td class="cn-display">思源黑体 Noto Sans SC 400</td></tr>
+      <tr><td class="template-name">mat</td><td>Minimal Reporting</td><td class="cn-display">思源宋体 Noto Serif SC 700</td><td class="cn-display">思源宋体 Noto Serif SC 400</td></tr>
+      <tr><td class="template-name">monochrome</td><td>Minimal</td><td class="cn-display">思源黑体 Noto Sans SC 700</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">neo-grid-bold</td><td>Tech / Brutalist</td><td class="cn-display">思源黑体 Noto Sans SC 900</td><td class="cn-display">思源黑体 Noto Sans SC 400</td></tr>
+      <tr><td class="template-name">peoples-platform</td><td>Populist Poster</td><td class="cn-display">思源宋体 Noto Serif SC 900</td><td class="cn-display">思源宋体 Noto Serif SC 400</td></tr>
+      <tr><td class="template-name">pin-and-paper</td><td>Casual / Crafted</td><td class="cn-display">龙藏体 Long Cang</td><td class="cn-display">霞鹜文楷 LXGW WenKai</td></tr>
+      <tr><td class="template-name">pink-script</td><td>Feminine / Script</td><td class="cn-display">站酷小薇体 ZCOOL XiaoWei</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">playful</td><td>Playful</td><td class="cn-display">站酷快乐体 ZCOOL KuaiLe</td><td class="cn-display">悠哉字体 Yozai</td></tr>
+      <tr><td class="template-name">raw-grid</td><td>Neobrutalist</td><td class="cn-display">思源黑体 Noto Sans SC 900</td><td class="cn-display">思源黑体 Noto Sans SC 500</td></tr>
+      <tr><td class="template-name">retro-windows</td><td>Tech / Retro</td><td class="cn-display">思源黑体 Noto Sans SC 700</td><td class="cn-display">思源黑体 Noto Sans SC 400</td></tr>
+      <tr><td class="template-name">retro-zine</td><td>Heavy Poster</td><td class="cn-display">思源宋体 Noto Serif SC 900</td><td class="cn-display">思源宋体 Noto Serif SC 400</td></tr>
+      <tr><td class="template-name">sakura-chroma</td><td>Feminine / Floral</td><td class="cn-display">站酷小薇体 ZCOOL XiaoWei</td><td class="cn-display">霞鹜文楷 LXGW WenKai</td></tr>
+      <tr><td class="template-name">scatterbrain</td><td>Playful / Chaotic</td><td class="cn-display">站酷快乐体 ZCOOL KuaiLe</td><td class="cn-display">悠哉字体 Yozai</td></tr>
+      <tr><td class="template-name">signal</td><td>Tech / Engineering</td><td class="cn-display">思源黑体 Noto Sans SC 700</td><td class="cn-display">思源黑体 Noto Sans SC 400</td></tr>
+      <tr><td class="template-name">soft-editorial</td><td>Literary Soft</td><td class="cn-display">霞鹜文楷 LXGW WenKai</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">stencil-tablet</td><td>Industrial Display</td><td class="cn-display">思源黑体 Noto Sans SC 900</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+      <tr><td class="template-name">studio</td><td>Minimal Editorial</td><td class="cn-display">思源宋体 Noto Serif SC 700</td><td class="cn-display">思源宋体 Noto Serif SC 400</td></tr>
+      <tr><td class="template-name">vellum</td><td>Literary</td><td class="cn-display">霞鹜文楷 LXGW WenKai</td><td class="cn-display">思源宋体 Noto Serif SC</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== RESOURCES ============== -->
+<section id="resources">
+  <h2>
+    CDN &amp; Resources<br>
+    <span class="zh" style="font-size:36px;">CDN 与资源</span>
+  </h2>
+  <p class="section-intro">
+    All recommended Chinese fonts are free for commercial use and load via CDN (no install required). Most are on Google Fonts; specialty faces use cn-fontsource or ZSFT CDN. See the note below about install-only fonts.
+  </p>
+
+  <div class="resources">
+    <div class="resource-card">
+      <h4>Google Fonts (recommended)</h4>
+      <p>The simplest way to load Chinese fonts. Covers Noto Sans SC, Noto Serif SC, ZCOOL series, Ma Shan Zheng, Liu Jian Mao Cao, Long Cang, Zhi Mang Xing, LXGW WenKai TC.</p>
+      <code>&lt;link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&amp;family=Noto+Serif+SC:wght@400;700;900&amp;family=ZCOOL+QingKe+HuangYou&amp;family=Ma+Shan+Zheng&amp;family=LXGW+WenKai+TC&amp;display=swap" rel="stylesheet"&gt;</code>
+    </div>
+
+    <div class="resource-card">
+      <h4>cn-fontsource CDN</h4>
+      <p>Best for: 得意黑 (Smiley Sans Oblique), 悠哉字体 (Yozai), and other open-source CJK fonts not on Google.</p>
+      <code>&lt;link href="https://cdn.jsdelivr.net/npm/cn-fontsource-smiley-sans-oblique-regular/font.css" rel="stylesheet"&gt;</code>
+      <a href="https://chinese-fonts-cdn.deno.dev/" target="_blank">browse all packages →</a>
+    </div>
+
+    <div class="resource-card">
+      <h4>ZSFT CDN (字制区 / 中文网字)</h4>
+      <p>Hosts specialty fonts (Plix, 寒蝉系列, 临海隶书, 朱雀仿宋). <strong>⚠️ Often blocked behind corporate proxies (Zscaler, etc.)</strong> — test in your target environment before recommending. Not used in any of the per-template recommendations on this page for that reason.</p>
+      <code>&lt;link href="https://fontsapi.zeoseven.com/[id]/main/result.css" rel="stylesheet"&gt;</code>
+      <a href="https://zeoseven.com/" target="_blank">zeoseven.com →</a>
+    </div>
+
+    <div class="resource-card">
+      <h4>Designer's gallery</h4>
+      <p>Live preview of all 41 fonts in the source guide, with sample text and side-by-side comparison.</p>
+      <a href="https://chinese-fonts-gallery.vercel.app/" target="_blank">chinese-fonts-gallery.vercel.app →</a>
+    </div>
+
+    <div class="resource-card">
+      <h4>Licensing summary</h4>
+      <p><strong>OFL-1.1</strong> (SIL Open Font License): free use, modification, redistribution — most fonts here.<br><br><strong>免费商用</strong> (Free for commercial use): vendor-specific permission, usually no modification of font itself.<br><br><strong>IPA-1.0</strong>: Japanese IPA license, free use and distribution.</p>
+    </div>
+
+    <div class="resource-card">
+      <h4>Pairing principles (from the guide)</h4>
+      <p><strong>Contrast for hierarchy</strong>: title and body from different style categories (script + sans, art + serif).<br><br><strong>Restraint for harmony</strong>: max 2-3 Chinese fonts per slide.<br><br><strong>Clear role</strong>: title creates memory/emotion; body ensures readability. Choose by role first.</p>
+    </div>
+
+    <div class="resource-card">
+      <h4>Install-only fonts — when to use</h4>
+      <p>Some popular Chinese display faces (优设标题黑, 鸿蒙字体, MiSans, 演示魁本楷, etc.) have <strong>no public CDN</strong>. They only work if:</p>
+      <p style="margin-top:0;">① <strong>You self-host</strong>: download the font file (.ttf/.woff2) and serve it from your own server via <code style="display:inline; padding:1px 6px;">@font-face</code>. Check the font's license first — most "免费商用" licenses permit self-hosting.<br><br>② <strong>You control the viewing environment</strong>: only viable for decks shown on your own machine where you've installed the font.</p>
+      <p>For shareable HTML decks (sent to others, embedded in pages, hosted online), <strong>stick to the CDN-loadable fonts in the table above</strong>. They'll render consistently for everyone.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Built for beautiful-html-templates · CJK pairings curated from the ByteDance design team's V2 font guide (41 fonts) · 2026
+</footer>
+
+</body>
+</html>
