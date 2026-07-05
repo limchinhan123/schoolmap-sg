@@ -31,7 +31,7 @@ A map and list tool for Singapore Permanent Residents navigating the P1 registra
 
 ## PR Access Scoring
 
-Each school is scored from Phase 2C ballot data (2022–2024):
+Each school is scored from Phase 2C ballot data over a **rolling 3-year window** (currently 2023–2025), so "recent" keeps meaning recent as new years are added:
 
 | Colour | Label | Meaning |
 |--------|-------|---------|
@@ -58,12 +58,14 @@ Each school is scored from Phase 2C ballot data (2022–2024):
 
 ## Data Sources
 
-| Data | Source |
-|------|--------|
-| School locations & names | MOE via Data.gov.sg + OneMap API |
-| Phase 2C ballot history | sgschooling.com (cross-validated against MOE) |
-| HDB resale transactions | data.gov.sg HDB Resale Flat Prices API |
-| Private condo transactions | URA Private Residential Property Transactions API |
+| Data | Source | Coverage |
+|------|--------|----------|
+| School locations & names | MOE via Data.gov.sg + OneMap API | 179 primary schools |
+| Phase 2C ballot history | sgschooling.com (cross-validated against MOE) | 2022–2025 |
+| HDB resale transactions | data.gov.sg HDB Resale Flat Prices API | last 24 months |
+| Private condo transactions | URA Private Residential Property Transactions API | last 18 months |
+
+Schools with no current P1 intake due to announced MOE relocations (Kranji, Damai, Townsville) are marked **No P1 Intake** rather than scored.
 
 ---
 
@@ -83,9 +85,19 @@ npm run dev
 ## Scripts
 
 ```bash
+# Yearly ballot refresh (needs SUPABASE_SERVICE_KEY in .env.local since tables are RLS-protected)
+npx tsx --env-file=.env.local scripts/scrape-ballot.ts 2026                              # scrape one year from sgschooling
+npx tsx --env-file=.env.local scripts/load-ballot.ts scripts/schools_ballot_2026.json    # upsert into Supabase
+npx tsx --env-file=.env.local scripts/compute-scores.ts                                  # rescore pr_color / pr_label (rolling 3-yr window)
+
+# Property refresh (idempotent — safe to re-run, only fills missing months)
+npx tsx --env-file=.env.local scripts/ingest-hdb.ts        # HDB resale, last 24 months
+npx tsx --env-file=.env.local scripts/ingest-condo.ts      # URA condo, last 18 months
+npx tsx --env-file=.env.local scripts/compute-avg-psf.ts   # recompute avg_psf_1km per school
+
+# Validation
 npx tsx scripts/validate-ballot-moe.ts      # validate ballot data vs sgschooling.com
 npx tsx scripts/apply-ballot-corrections.ts # apply corrections from discrepancies.csv
-npx tsx scripts/compute-scores.ts           # recompute pr_color / pr_label for all schools
 ```
 
 ---
@@ -107,7 +119,7 @@ Before committing to any civic data source, ask:
 
 ### 3. Data freshness is a feature
 
-Phase 2C results publish each September. This map has no staleness indicator — that's a known gap. A fork should show `data_last_updated` and flag when the current year's results aren't loaded.
+Phase 2C results publish each September. The app shows dataset vintage in the school detail panel (ballot years + latest property month), resolved at build time. Refresh cadence: ballot data yearly (~September), property data monthly if you care to.
 
 ### 4. Property data is the moat
 

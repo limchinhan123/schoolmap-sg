@@ -2,7 +2,8 @@
 
 import dynamic from 'next/dynamic'
 import { useMemo, useState } from 'react'
-import type { Filters, School, SortDir, SortKey } from '@/lib/types'
+import type { DataVintage, Filters, School, SortDir, SortKey } from '@/lib/types'
+import { matchesPsfBand } from '@/lib/psf'
 import FilterBar from './FilterBar'
 import SchoolDetailPanel from './SchoolDetailPanel'
 import ListView from './ListView'
@@ -23,7 +24,7 @@ const DEFAULT_FILTERS: Filters = {
 
 const PR_ORDER: Record<string, number> = { green: 0, amber: 1, orange: 2, grey: 3 }
 
-export default function AppShell({ schools }: { schools: School[] }) {
+export default function AppShell({ schools, vintage }: { schools: School[]; vintage?: DataVintage }) {
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS)
   const [selected, setSelected] = useState<School | null>(null)
   const [view, setView] = useState<'map' | 'list'>('map')
@@ -45,9 +46,7 @@ export default function AppShell({ schools }: { schools: School[] }) {
       if (filters.sap && !s.is_sap) return false
       if (filters.alp && !s.alp_focus) return false
       if (filters.ip && !s.is_ip_pipeline) return false
-      if (filters.psf === 'budget' && (s.avg_psf_1km == null || s.avg_psf_1km >= 600)) return false
-      if (filters.psf === 'mid' && (s.avg_psf_1km == null || s.avg_psf_1km < 600 || s.avg_psf_1km >= 750)) return false
-      if (filters.psf === 'premium' && (s.avg_psf_1km == null || s.avg_psf_1km < 750)) return false
+      if (!matchesPsfBand(filters.psf, s.avg_psf_1km)) return false
       if (q && !s.name.toLowerCase().includes(q)) return false
       return true
     })
@@ -122,6 +121,7 @@ export default function AppShell({ schools }: { schools: School[] }) {
         <SchoolDetailPanel
           school={selected}
           onClose={() => setSelected(null)}
+          vintage={vintage}
         />
       </div>
     </div>

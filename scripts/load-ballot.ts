@@ -11,7 +11,8 @@ import fs from 'fs'
 import path from 'path'
 import { createClient } from '@supabase/supabase-js'
 
-const INPUT_PATH = path.resolve('scripts/schools_ballot_raw.json')
+// Input file can be overridden: `npx tsx scripts/load-ballot.ts scripts/schools_ballot_2025.json`
+const INPUT_PATH = path.resolve(process.argv[2] ?? 'scripts/schools_ballot_raw.json')
 
 async function main() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
@@ -21,7 +22,8 @@ async function main() {
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+    // Service key needed for writes now that RLS restricts anon to SELECT
+    process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
   )
 
   const raw = JSON.parse(fs.readFileSync(INPUT_PATH, 'utf-8'))

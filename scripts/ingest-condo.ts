@@ -20,9 +20,14 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = 'https://jekmiqmjqebyzoidfgry.supabase.co'
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || 'sb_publishable_3iba6WVpWBm6bjwBnOAPHg_GPcC_L-r'
-const URA_ACCESS_KEY = process.env.URA_ACCESS_KEY || '***REMOVED***'
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+const URA_ACCESS_KEY = process.env.URA_ACCESS_KEY!
+
+if (!SUPABASE_URL || !SUPABASE_KEY || !URA_ACCESS_KEY) {
+  console.error('Missing env vars. Run: npx tsx --env-file=.env.local scripts/ingest-condo.ts')
+  process.exit(1)
+}
 
 const ALLOWED_TYPES = new Set(['Condominium', 'Apartment', 'Executive Condominium'])
 const BATCH_SIZE = 300

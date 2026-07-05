@@ -2,18 +2,19 @@
 
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import type { School, SortDir, SortKey } from '@/lib/types'
+import { PSF_HEAT_STEPS } from '@/lib/psf'
 
 function psfColor(psf: number): string {
-  if (psf < 550) return 'text-emerald-600'
-  if (psf < 700) return 'text-amber-600'
-  if (psf < 850) return 'text-orange-600'
+  if (psf < PSF_HEAT_STEPS[0]) return 'text-emerald-600'
+  if (psf < PSF_HEAT_STEPS[1]) return 'text-amber-600'
+  if (psf < PSF_HEAT_STEPS[2]) return 'text-orange-600'
   return 'text-red-600'
 }
 
 function psfColorSelected(psf: number): string {
-  if (psf < 550) return 'text-emerald-300'
-  if (psf < 700) return 'text-amber-300'
-  if (psf < 850) return 'text-orange-300'
+  if (psf < PSF_HEAT_STEPS[0]) return 'text-emerald-300'
+  if (psf < PSF_HEAT_STEPS[1]) return 'text-amber-300'
+  if (psf < PSF_HEAT_STEPS[2]) return 'text-orange-300'
   return 'text-red-300'
 }
 

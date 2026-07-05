@@ -167,26 +167,36 @@ function computeQualityStars(school: School): QualityResult {
 // ─── Manual overrides ─────────────────────────────────────────────────────────
 // Schools whose ballot histories are atypical and need a hand-crafted result.
 // Key = exact DB school name (uppercase).
+// Re-check these whenever a new ballot year is loaded.
 
 const SCHOOL_OVERRIDES: Record<string, Partial<PRResult>> = {
-  // 2022=PR<1, 2023=SC<1, 2024=SC1-2 — volatile, no clear PR window
-  'NAVAL BASE PRIMARY SCHOOL': {
-    pr_color: 'orange',
-    pr_label: 'Marginal',
-    pr_summary: 'Inconsistent ballot pattern — limited PR window, outcome uncertain',
-  },
-  // 2022=no_ballot, 2023=PR<1, 2024=SC1-2 — demand tightening, window closing
+  // 2023=PR<1, 2024=SC1-2 (PRs shut out), 2025=no_ballot (60 vac / 50 applicants).
+  // Volatile open→tight→open pattern; the automatic green from the 2023 PR ballot
+  // overstates certainty. Amber matches the model's own "Recently Cleared" rule.
   'JING SHAN PRIMARY SCHOOL': {
     pr_color: 'amber',
-    pr_label: 'Improving Trend',
-    pr_summary: 'Ballot demand softening — SCs beyond 2km are now competing, PR window may emerge',
+    pr_label: 'Recently Cleared',
+    pr_summary: 'Undersubscribed in 2025 after a volatile run (PR ballot 2023, PRs shut out 2024) — trend is improving but not yet stable',
   },
-  // 2022=no_ballot, 2023=no_ballot, NO 2024 data — limited data, but genuinely open
+  // MOE relocations — no P1 registration in the current exercises, so these are
+  // not options for families planning P1 entry (mothership.sg, May 2025; MOE PR).
   'KRANJI PRIMARY SCHOOL': {
-    pr_color: 'green',
-    pr_label: 'Vacancies Remained',
-    pr_summary: 'Phase 2C had unfilled vacancies in the most recent year — PRs who applied within 1km would have been admitted',
-    pr_limited_data: true,
+    pr_color: 'grey',
+    pr_label: 'No P1 Intake',
+    pr_summary: 'No P1 registration from 2025 — school is relocating to Tengah (2028). Current campus stays open only until existing students graduate',
+    pr_limited_data: false,
+  },
+  'DAMAI PRIMARY SCHOOL': {
+    pr_color: 'grey',
+    pr_label: 'No P1 Intake',
+    pr_summary: 'No P1 registration from 2025 to 2027 — school is relocating to Tampines North (2029)',
+    pr_limited_data: false,
+  },
+  'TOWNSVILLE PRIMARY SCHOOL': {
+    pr_color: 'grey',
+    pr_label: 'No P1 Intake',
+    pr_summary: 'No P1 registration from 2025 to 2027 — school is relocating to East Canberra (2029)',
+    pr_limited_data: false,
   },
 }
 
@@ -200,7 +210,8 @@ async function main() {
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+    // Service key needed for writes now that RLS restricts anon to SELECT
+    process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
   )
 
   // Fetch all schools
@@ -224,9 +235,16 @@ async function main() {
     process.exit(1)
   }
 
+  // Score on a rolling 3-year window so "recent" keeps meaning recent as new
+  // years accumulate (a PR ballot 4+ years ago shouldn't still force green).
+  const maxYear = Math.max(...allBallot.map(r => r.year))
+  const windowStart = maxYear - 2
+  console.log(`Scoring window: ${windowStart}–${maxYear}`)
+
   // Group ballot data by school_id
   const ballotBySchool = new Map<string, BallotYear[]>()
   for (const row of allBallot) {
+    if (row.year < windowStart) continue
     const list = ballotBySchool.get(row.school_id) ?? []
     list.push({
       year: row.year,

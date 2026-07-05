@@ -9,7 +9,7 @@ import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+  process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
 )
 
 async function main() {
@@ -77,4 +77,7 @@ async function main() {
   }
 }
 
-main().catch(console.error)
+main().catch(err => {
+  console.error(err)
+  process.exit(1)
+})

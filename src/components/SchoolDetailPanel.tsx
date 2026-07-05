@@ -2,13 +2,9 @@
 
 import { X, AlertCircle, TrendingUp, MapPin, Calendar, Layers } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-import type { School, NearbyProperty, BallotRound } from '@/lib/types'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
-)
+import { supabase } from '@/lib/supabase'
+import { psfBandOf } from '@/lib/psf'
+import type { School, NearbyProperty, BallotRound, DataVintage } from '@/lib/types'
 
 const COLOR_BG: Record<string, string> = {
   green: 'bg-green-100 text-green-800',
@@ -179,9 +175,11 @@ function ballotColor(bt: string): string {
 
 function BallotHistory({ schoolId }: { schoolId: string }) {
   const [rounds, setRounds] = useState<BallotRound[] | null>(null)
+  const [failed, setFailed] = useState(false)
 
   useEffect(() => {
     setRounds(null)
+    setFailed(false)
     supabase
       .from('school_ballot_data')
       .select('year, ballot_type, phase2c_vacancies, phase2c_applicants, ballot_held, supplementary_triggered')
@@ -189,8 +187,13 @@ function BallotHistory({ schoolId }: { schoolId: string }) {
       .order('year', { ascending: false })
       .then(({ data, error }) => {
         if (!error && data) setRounds(data as BallotRound[])
+        else setFailed(true)
       })
   }, [schoolId])
+
+  if (failed) {
+    return <p className="text-xs text-slate-400 mt-3">Couldn&apos;t load ballot history — check your connection and reopen this school.</p>
+  }
 
   if (rounds === null) {
     return <div className="h-16 rounded-lg bg-slate-50 animate-pulse mt-3" />
@@ -270,10 +273,12 @@ function BallotHistory({ schoolId }: { schoolId: string }) {
 function PropertySection({ school }: { school: School }) {
   const [props, setProps] = useState<NearbyProperty[] | null>(null)
   const [loading, setLoading] = useState(true)
+  const [failed, setFailed] = useState(false)
 
   useEffect(() => {
     setLoading(true)
     setProps(null)
+    setFailed(false)
 
     supabase.rpc('nearby_properties', {
       school_lat: school.gate_lat,
@@ -282,9 +287,10 @@ function PropertySection({ school }: { school: School }) {
       max_rows: 20,
     }).then(({ data, error }) => {
       if (!error && data) setProps(data as NearbyProperty[])
+      else setFailed(true)
       setLoading(false)
     })
-  }, [school.id])
+  }, [school.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
     return (
@@ -293,6 +299,12 @@ function PropertySection({ school }: { school: School }) {
           <div key={i} className="h-20 rounded-xl bg-slate-100 animate-pulse" />
         ))}
       </div>
+    )
+  }
+
+  if (failed) {
+    return (
+      <p className="text-xs text-slate-400 py-4 text-center">Couldn&apos;t load transactions — check your connection and try again</p>
     )
   }
 
@@ -312,10 +324,11 @@ function PropertySection({ school }: { school: School }) {
     return sorted[Math.floor(sorted.length / 2)]
   })()
 
-  const psfBandLabel = zonePsf < 600 ? 'Budget' : zonePsf < 750 ? 'Mid-range' : 'Premium'
-  const psfBandColor = zonePsf < 600
+  const zoneBand = psfBandOf(zonePsf)
+  const psfBandLabel = zoneBand === 'budget' ? 'Budget' : zoneBand === 'mid' ? 'Mid-range' : 'Premium'
+  const psfBandColor = zoneBand === 'budget'
     ? 'bg-emerald-50 text-emerald-700'
-    : zonePsf < 750
+    : zoneBand === 'mid'
     ? 'bg-amber-50 text-amber-700'
     : 'bg-red-50 text-red-700'
 
@@ -367,9 +380,11 @@ function PropertySection({ school }: { school: School }) {
 export default function SchoolDetailPanel({
   school,
   onClose,
+  vintage,
 }: {
   school: School | null
   onClose: () => void
+  vintage?: DataVintage
 }) {
   const visible = !!school
   const [showProperties, setShowProperties] = useState(false)
@@ -508,11 +523,29 @@ export default function SchoolDetailPanel({
                           </span>
                         )}
                       </div>
+                      {school.is_gep_centre && (
+                        <p className="text-[11px] text-slate-400 mt-2 leading-snug">
+                          MOE announced (2024) that the centralized GEP is transitioning to
+                          school-based programmes for high-ability learners — this badge
+                          reflects legacy GEP-centre status.
+                        </p>
+                      )}
                     </div>
                   )}
 
                   {/* Address */}
                   <p className="text-xs text-slate-400">{school.address}</p>
+
+                  {/* Data freshness */}
+                  {vintage && (vintage.ballotYearMax || vintage.propertyMax) && (
+                    <p className="text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+                      {vintage.ballotYearMax && (
+                        <>Ballot data {vintage.ballotYearMin}–{vintage.ballotYearMax} (sgschooling.com)</>
+                      )}
+                      {vintage.ballotYearMax && vintage.propertyMax && ' · '}
+                      {vintage.propertyMax && <>Property to {vintage.propertyMax} (HDB / URA)</>}
+                    </p>
+                  )}
                 </>
               ) : (
                 <PropertySection school={school} />

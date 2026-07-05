@@ -49,6 +49,13 @@ export interface BallotRound {
   supplementary_triggered: boolean
 }
 
+/** Freshness of the underlying datasets, resolved at build time. */
+export interface DataVintage {
+  ballotYearMin: number | null
+  ballotYearMax: number | null
+  propertyMax: string | null // e.g. 'Jun 2026'
+}
+
 export interface NearbyProperty {
   source: 'hdb' | 'condo'
   property_name: string

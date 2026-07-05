@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronDown, LayoutList, Map, SlidersHorizontal, X } from 'lucide-react'
 import { type Filters, type Region, type PRColor, type PsfBand } from '@/lib/types'
+import { PSF_BANDS } from '@/lib/psf'
 
 // ── Shared hook ────────────────────────────────────────────────────────────────
 
@@ -403,9 +404,9 @@ const REGION_OPTIONS: { value: Region | 'All'; label: string }[] = [
 
 const PSF_OPTIONS: { value: PsfBand; label: string; dot?: string }[] = [
   { value: 'All',     label: 'Any Zone' },
-  { value: 'budget',  label: 'Budget  < $600',   dot: '#059669' },
-  { value: 'mid',     label: 'Mid  $600–750',     dot: '#d97706' },
-  { value: 'premium', label: 'Premium  > $750',   dot: '#dc2626' },
+  { value: 'budget',  label: `Budget  < $${PSF_BANDS.budgetMax}`,                    dot: '#059669' },
+  { value: 'mid',     label: `Mid  $${PSF_BANDS.budgetMax}–${PSF_BANDS.midMax}`,     dot: '#d97706' },
+  { value: 'premium', label: `Premium  > $${PSF_BANDS.midMax}`,                      dot: '#dc2626' },
 ]
 
 // ── Mobile bottom sheet ────────────────────────────────────────────────────────

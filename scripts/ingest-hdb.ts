@@ -7,7 +7,7 @@
 import { createClient } from '@supabase/supabase-js'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
 const ONEMAP_KEY  = process.env.ONEMAP_API_KEY!
 const HDB_RESOURCE = 'f1765b54-a209-4718-8d38-a39237f502b3'
 
@@ -131,18 +131,19 @@ async function main() {
   }
 
   const months = last24Months()
-  console.log(`Fetching ${months.length} months: ${months[0]} → ${months[months.length - 1]}`)
+  console.log(`Target window: ${months[0]} → ${months[months.length - 1]} (${months.length} months)`)
 
-  // Check how many records already exist
-  const { count: existingCount } = await supabase
+  // Count existing rows per month so complete months are skipped (idempotent re-runs)
+  const { data: existing, error: existErr } = await supabase
     .from('hdb_transactions')
-    .select('*', { count: 'exact', head: true })
-  console.log(`Existing records: ${existingCount ?? 0}`)
+    .select('transaction_date')
+  if (existErr) throw new Error(`Failed to read existing rows: ${existErr.message}`)
 
-  // Clear existing data for clean re-run
-  if ((existingCount ?? 0) > 0) {
-    console.log('Clearing existing hdb_transactions...')
-    await supabase.from('hdb_transactions').delete().not('id', 'is', null)
+  const monthCounts: Record<string, number> = {}
+  for (const row of existing ?? []) {
+    if (!row.transaction_date) continue
+    const key = String(row.transaction_date).slice(0, 7) // YYYY-MM
+    monthCounts[key] = (monthCounts[key] ?? 0) + 1
   }
 
   let totalInserted = 0
@@ -151,6 +152,16 @@ async function main() {
   for (const month of months) {
     process.stdout.write(`  ${month}... `)
     const records = await fetchMonth(month)
+    if (records.length === 0) {
+      console.log('no records published yet, skipping')
+      continue
+    }
+    // Month already fully ingested (row count matches source) — skip the
+    // expensive geocoding. Partial months (crashed runs) self-heal here.
+    if ((monthCounts[month] ?? 0) === records.length) {
+      console.log(`${records.length} records — already complete, skipping`)
+      continue
+    }
     totalFetched += records.length
     process.stdout.write(`${records.length} records, geocoding... `)
 
@@ -182,18 +193,25 @@ async function main() {
       })
     }
 
-    // Upsert in chunks of 500 (ignore duplicates via onConflict)
+    // Only after the month fetched + geocoded successfully, replace its rows.
+    // Worst-case crash mid-insert loses one month, healed on the next run.
+    if ((monthCounts[month] ?? 0) > 0) {
+      const { error: delErr } = await supabase
+        .from('hdb_transactions')
+        .delete()
+        .eq('transaction_date', `${month}-01`)
+      if (delErr) throw new Error(`Delete for ${month} failed: ${delErr.message}`)
+    }
+
+    // Plain insert in chunks of 500 — the month's rows were just deleted, and
+    // genuine duplicate transactions in the source data must be kept.
     for (let i = 0; i < batch.length; i += 500) {
       const chunk = batch.slice(i, i + 500)
-      const { error, count } = await supabase
+      const { error } = await supabase
         .from('hdb_transactions')
-        .upsert(chunk, {
-          onConflict: 'block,street_name,transaction_date,flat_type,storey_range,resale_price',
-          ignoreDuplicates: true,
-        })
-        .select('id', { count: 'exact', head: true })
-      if (error) console.error(`\n  Upsert error for ${month}:`, error.message)
-      else totalInserted += count ?? chunk.length
+        .insert(chunk)
+      if (error) throw new Error(`Insert for ${month} failed: ${error.message}`)
+      totalInserted += chunk.length
     }
 
     console.log(`done (cache hits: ${geocodeCacheHits})`)
@@ -211,4 +229,7 @@ async function main() {
   console.log(`   Final row count in DB: ${finalCount}`)
 }
 
-main().catch(console.error)
+main().catch(err => {
+  console.error(err)
+  process.exit(1)
+})

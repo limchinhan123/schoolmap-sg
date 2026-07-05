@@ -1,0 +1,730 @@
+[
+  {
+    "name": "Admiralty Primary School",
+    "slug": "admiralty-primary-school"
+  },
+  {
+    "name": "Ahmad Ibrahim Primary School",
+    "slug": "ahmad-ibrahim-primary-school"
+  },
+  {
+    "name": "Ai Tong School",
+    "slug": "ai-tong-school"
+  },
+  {
+    "name": "Alexandra Primary School",
+    "slug": "alexandra-primary-school"
+  },
+  {
+    "name": "Anchor Green Primary School",
+    "slug": "anchor-green-primary-school"
+  },
+  {
+    "name": "Anderson Primary School",
+    "slug": "anderson-primary-school"
+  },
+  {
+    "name": "Ang Mo Kio Primary School",
+    "slug": "ang-mo-kio-primary-school"
+  },
+  {
+    "name": "Anglo-Chinese School (Junior)",
+    "slug": "anglo-chinese-school-junior"
+  },
+  {
+    "name": "Anglo-Chinese School (Primary)",
+    "slug": "anglo-chinese-school-primary"
+  },
+  {
+    "name": "Angsana Primary School",
+    "slug": "angsana-primary-school"
+  },
+  {
+    "name": "Beacon Primary School",
+    "slug": "beacon-primary-school"
+  },
+  {
+    "name": "Bedok Green Primary School",
+    "slug": "bedok-green-primary-school"
+  },
+  {
+    "name": "Bendemeer Primary School",
+    "slug": "bendemeer-primary-school"
+  },
+  {
+    "name": "Blangah Rise Primary School",
+    "slug": "blangah-rise-primary-school"
+  },
+  {
+    "name": "Boon Lay Garden Primary School",
+    "slug": "boon-lay-garden-primary-school"
+  },
+  {
+    "name": "Bukit Panjang Primary School",
+    "slug": "bukit-panjang-primary-school"
+  },
+  {
+    "name": "Bukit Timah Primary School",
+    "slug": "bukit-timah-primary-school"
+  },
+  {
+    "name": "Bukit View Primary School",
+    "slug": "bukit-view-primary-school"
+  },
+  {
+    "name": "Canberra Primary School",
+    "slug": "canberra-primary-school"
+  },
+  {
+    "name": "Canossa Catholic Primary School",
+    "slug": "canossa-catholic-primary-school"
+  },
+  {
+    "name": "Cantonment Primary School",
+    "slug": "cantonment-primary-school"
+  },
+  {
+    "name": "Casuarina Primary School",
+    "slug": "casuarina-primary-school"
+  },
+  {
+    "name": "Catholic High School (Primary)",
+    "slug": "catholic-high-school-primary"
+  },
+  {
+    "name": "Cedar Primary School",
+    "slug": "cedar-primary-school"
+  },
+  {
+    "name": "Changkat Primary School",
+    "slug": "changkat-primary-school"
+  },
+  {
+    "name": "CHIJ (Katong) Primary",
+    "slug": "chij-katong-primary"
+  },
+  {
+    "name": "CHIJ (Kellock)",
+    "slug": "chij-kellock"
+  },
+  {
+    "name": "CHIJ Our Lady of Good Counsel",
+    "slug": "chij-our-lady-of-good-counsel"
+  },
+  {
+    "name": "CHIJ Our Lady of the Nativity",
+    "slug": "chij-our-lady-of-the-nativity"
+  },
+  {
+    "name": "CHIJ Our Lady Queen of Peace",
+    "slug": "chij-our-lady-queen-of-peace"
+  },
+  {
+    "name": "CHIJ Primary (Toa Payoh)",
+    "slug": "chij-primary-toa-payoh"
+  },
+  {
+    "name": "CHIJ St. Nicholas Girls' School (Primary)",
+    "slug": "chij-st-nicholas-girls-school-primary"
+  },
+  {
+    "name": "Chongfu School",
+    "slug": "chongfu-school"
+  },
+  {
+    "name": "Chongzheng Primary School",
+    "slug": "chongzheng-primary-school"
+  },
+  {
+    "name": "Chua Chu Kang Primary School",
+    "slug": "chua-chu-kang-primary-school"
+  },
+  {
+    "name": "Clementi Primary School",
+    "slug": "clementi-primary-school"
+  },
+  {
+    "name": "Compassvale Primary School",
+    "slug": "compassvale-primary-school"
+  },
+  {
+    "name": "Concord Primary School",
+    "slug": "concord-primary-school"
+  },
+  {
+    "name": "Corporation Primary School",
+    "slug": "corporation-primary-school"
+  },
+  {
+    "name": "Damai Primary School",
+    "slug": "damai-primary-school"
+  },
+  {
+    "name": "Dazhong Primary School",
+    "slug": "dazhong-primary-school"
+  },
+  {
+    "name": "De La Salle School",
+    "slug": "de-la-salle-school"
+  },
+  {
+    "name": "East Spring Primary School",
+    "slug": "east-spring-primary-school"
+  },
+  {
+    "name": "Edgefield Primary School",
+    "slug": "edgefield-primary-school"
+  },
+  {
+    "name": "Elias Park Primary School",
+    "slug": "elias-park-primary-school"
+  },
+  {
+    "name": "Endeavour Primary School",
+    "slug": "endeavour-primary-school"
+  },
+  {
+    "name": "Evergreen Primary School",
+    "slug": "evergreen-primary-school"
+  },
+  {
+    "name": "Fairfield Methodist School (Primary)",
+    "slug": "fairfield-methodist-school-primary"
+  },
+  {
+    "name": "Farrer Park Primary School",
+    "slug": "farrer-park-primary-school"
+  },
+  {
+    "name": "Fengshan Primary School",
+    "slug": "fengshan-primary-school"
+  },
+  {
+    "name": "Fern Green Primary School",
+    "slug": "fern-green-primary-school"
+  },
+  {
+    "name": "Fernvale Primary School",
+    "slug": "fernvale-primary-school"
+  },
+  {
+    "name": "First Toa Payoh Primary School",
+    "slug": "first-toa-payoh-primary-school"
+  },
+  {
+    "name": "Frontier Primary School",
+    "slug": "frontier-primary-school"
+  },
+  {
+    "name": "Fuchun Primary School",
+    "slug": "fuchun-primary-school"
+  },
+  {
+    "name": "Fuhua Primary School",
+    "slug": "fuhua-primary-school"
+  },
+  {
+    "name": "Gan Eng Seng Primary School",
+    "slug": "gan-eng-seng-primary-school"
+  },
+  {
+    "name": "Geylang Methodist School (Primary)",
+    "slug": "geylang-methodist-school-primary"
+  },
+  {
+    "name": "Gongshang Primary School",
+    "slug": "gongshang-primary-school"
+  },
+  {
+    "name": "Greendale Primary School",
+    "slug": "greendale-primary-school"
+  },
+  {
+    "name": "Greenridge Primary School",
+    "slug": "greenridge-primary-school"
+  },
+  {
+    "name": "Greenwood Primary School",
+    "slug": "greenwood-primary-school"
+  },
+  {
+    "name": "Haig Girls' School",
+    "slug": "haig-girls-school"
+  },
+  {
+    "name": "Henry Park Primary School",
+    "slug": "henry-park-primary-school"
+  },
+  {
+    "name": "Holy Innocents' Primary School",
+    "slug": "holy-innocents-primary-school"
+  },
+  {
+    "name": "Hong Wen School",
+    "slug": "hong-wen-school"
+  },
+  {
+    "name": "Horizon Primary School",
+    "slug": "horizon-primary-school"
+  },
+  {
+    "name": "Hougang Primary School",
+    "slug": "hougang-primary-school"
+  },
+  {
+    "name": "Huamin Primary School",
+    "slug": "huamin-primary-school"
+  },
+  {
+    "name": "Innova Primary School",
+    "slug": "innova-primary-school"
+  },
+  {
+    "name": "Jiemin Primary School",
+    "slug": "jiemin-primary-school"
+  },
+  {
+    "name": "Jing Shan Primary School",
+    "slug": "jing-shan-primary-school"
+  },
+  {
+    "name": "Junyuan Primary School",
+    "slug": "junyuan-primary-school"
+  },
+  {
+    "name": "Jurong Primary School",
+    "slug": "jurong-primary-school"
+  },
+  {
+    "name": "Jurong West Primary School",
+    "slug": "jurong-west-primary-school"
+  },
+  {
+    "name": "Keming Primary School",
+    "slug": "keming-primary-school"
+  },
+  {
+    "name": "Kheng Cheng School",
+    "slug": "kheng-cheng-school"
+  },
+  {
+    "name": "Kong Hwa School",
+    "slug": "kong-hwa-school"
+  },
+  {
+    "name": "Kranji Primary School",
+    "slug": "kranji-primary-school"
+  },
+  {
+    "name": "Kuo Chuan Presbyterian Primary School",
+    "slug": "kuo-chuan-presbyterian-primary-school"
+  },
+  {
+    "name": "Lakeside Primary School",
+    "slug": "lakeside-primary-school"
+  },
+  {
+    "name": "Lianhua Primary School",
+    "slug": "lianhua-primary-school"
+  },
+  {
+    "name": "Maha Bodhi School",
+    "slug": "maha-bodhi-school"
+  },
+  {
+    "name": "Maris Stella High School (Primary)",
+    "slug": "maris-stella-high-school-primary"
+  },
+  {
+    "name": "Marsiling Primary School",
+    "slug": "marsiling-primary-school"
+  },
+  {
+    "name": "Marymount Convent School",
+    "slug": "marymount-convent-school"
+  },
+  {
+    "name": "Mayflower Primary School",
+    "slug": "mayflower-primary-school"
+  },
+  {
+    "name": "Mee Toh School",
+    "slug": "mee-toh-school"
+  },
+  {
+    "name": "Meridian Primary School",
+    "slug": "meridian-primary-school"
+  },
+  {
+    "name": "Methodist Girls' School (Primary)",
+    "slug": "methodist-girls-school-primary"
+  },
+  {
+    "name": "Montfort Junior School",
+    "slug": "montfort-junior-school"
+  },
+  {
+    "name": "Nan Chiau Primary School",
+    "slug": "nan-chiau-primary-school"
+  },
+  {
+    "name": "Nan Hua Primary School",
+    "slug": "nan-hua-primary-school"
+  },
+  {
+    "name": "Nanyang Primary School",
+    "slug": "nanyang-primary-school"
+  },
+  {
+    "name": "Naval Base Primary School",
+    "slug": "naval-base-primary-school"
+  },
+  {
+    "name": "New Town Primary School",
+    "slug": "new-town-primary-school"
+  },
+  {
+    "name": "Ngee Ann Primary School",
+    "slug": "ngee-ann-primary-school"
+  },
+  {
+    "name": "North Spring Primary School",
+    "slug": "north-spring-primary-school"
+  },
+  {
+    "name": "North View Primary School",
+    "slug": "north-view-primary-school"
+  },
+  {
+    "name": "North Vista Primary School",
+    "slug": "north-vista-primary-school"
+  },
+  {
+    "name": "Northland Primary School",
+    "slug": "northland-primary-school"
+  },
+  {
+    "name": "Northoaks Primary School",
+    "slug": "northoaks-primary-school"
+  },
+  {
+    "name": "Northshore Primary School",
+    "slug": "northshore-primary-school"
+  },
+  {
+    "name": "Oasis Primary School",
+    "slug": "oasis-primary-school"
+  },
+  {
+    "name": "Opera Estate Primary School",
+    "slug": "opera-estate-primary-school"
+  },
+  {
+    "name": "Palm View Primary School",
+    "slug": "palm-view-primary-school"
+  },
+  {
+    "name": "Park View Primary School",
+    "slug": "park-view-primary-school"
+  },
+  {
+    "name": "Pasir Ris Primary School",
+    "slug": "pasir-ris-primary-school"
+  },
+  {
+    "name": "Paya Lebar Methodist Girls' School (Primary)",
+    "slug": "paya-lebar-methodist-girls-school-primary"
+  },
+  {
+    "name": "Pei Chun Public School",
+    "slug": "pei-chun-public-school"
+  },
+  {
+    "name": "Pei Hwa Presbyterian Primary School",
+    "slug": "pei-hwa-presbyterian-primary-school"
+  },
+  {
+    "name": "Pei Tong Primary School",
+    "slug": "pei-tong-primary-school"
+  },
+  {
+    "name": "Peiying Primary School",
+    "slug": "peiying-primary-school"
+  },
+  {
+    "name": "Pioneer Primary School",
+    "slug": "pioneer-primary-school"
+  },
+  {
+    "name": "Poi Ching School",
+    "slug": "poi-ching-school"
+  },
+  {
+    "name": "Princess Elizabeth Primary School",
+    "slug": "princess-elizabeth-primary-school"
+  },
+  {
+    "name": "Punggol Cove Primary School",
+    "slug": "punggol-cove-primary-school"
+  },
+  {
+    "name": "Punggol Green Primary School",
+    "slug": "punggol-green-primary-school"
+  },
+  {
+    "name": "Punggol Primary School",
+    "slug": "punggol-primary-school"
+  },
+  {
+    "name": "Punggol View Primary School",
+    "slug": "punggol-view-primary-school"
+  },
+  {
+    "name": "Qifa Primary School",
+    "slug": "qifa-primary-school"
+  },
+  {
+    "name": "Qihua Primary School",
+    "slug": "qihua-primary-school"
+  },
+  {
+    "name": "Queenstown Primary School",
+    "slug": "queenstown-primary-school"
+  },
+  {
+    "name": "Radin Mas Primary School",
+    "slug": "radin-mas-primary-school"
+  },
+  {
+    "name": "Raffles Girls' Primary School",
+    "slug": "raffles-girls-primary-school"
+  },
+  {
+    "name": "Red Swastika School",
+    "slug": "red-swastika-school"
+  },
+  {
+    "name": "River Valley Primary School",
+    "slug": "river-valley-primary-school"
+  },
+  {
+    "name": "Riverside Primary School",
+    "slug": "riverside-primary-school"
+  },
+  {
+    "name": "Rivervale Primary School",
+    "slug": "rivervale-primary-school"
+  },
+  {
+    "name": "Rosyth School",
+    "slug": "rosyth-school"
+  },
+  {
+    "name": "Rulang Primary School",
+    "slug": "rulang-primary-school"
+  },
+  {
+    "name": "Sembawang Primary School",
+    "slug": "sembawang-primary-school"
+  },
+  {
+    "name": "Seng Kang Primary School",
+    "slug": "seng-kang-primary-school"
+  },
+  {
+    "name": "Sengkang Green Primary School",
+    "slug": "sengkang-green-primary-school"
+  },
+  {
+    "name": "Shuqun Primary School",
+    "slug": "shuqun-primary-school"
+  },
+  {
+    "name": "Si Ling Primary School",
+    "slug": "si-ling-primary-school"
+  },
+  {
+    "name": "Singapore Chinese Girls' Primary School",
+    "slug": "singapore-chinese-girls-primary-school"
+  },
+  {
+    "name": "South View Primary School",
+    "slug": "south-view-primary-school"
+  },
+  {
+    "name": "Springdale Primary School",
+    "slug": "springdale-primary-school"
+  },
+  {
+    "name": "St Andrew's School (Junior)",
+    "slug": "st-andrews-school-junior"
+  },
+  {
+    "name": "St. Anthony's Canossian Primary School",
+    "slug": "st-anthonys-canossian-primary-school"
+  },
+  {
+    "name": "St. Anthony's Primary School",
+    "slug": "st-anthonys-primary-school"
+  },
+  {
+    "name": "St. Gabriel's Primary School",
+    "slug": "st-gabriels-primary-school"
+  },
+  {
+    "name": "St. Hilda's Primary School",
+    "slug": "st-hildas-primary-school"
+  },
+  {
+    "name": "St. Joseph's Institution Junior",
+    "slug": "st-josephs-institution-junior"
+  },
+  {
+    "name": "St. Margaret's School (Primary)",
+    "slug": "st-margarets-school-primary"
+  },
+  {
+    "name": "St. Stephen's School",
+    "slug": "st-stephens-school"
+  },
+  {
+    "name": "Tampines North Primary School",
+    "slug": "tampines-north-primary-school"
+  },
+  {
+    "name": "Tampines Primary School",
+    "slug": "tampines-primary-school"
+  },
+  {
+    "name": "Tanjong Katong Primary School",
+    "slug": "tanjong-katong-primary-school"
+  },
+  {
+    "name": "Tao Nan School",
+    "slug": "tao-nan-school"
+  },
+  {
+    "name": "Teck Ghee Primary School",
+    "slug": "teck-ghee-primary-school"
+  },
+  {
+    "name": "Teck Whye Primary School",
+    "slug": "teck-whye-primary-school"
+  },
+  {
+    "name": "Telok Kurau Primary School",
+    "slug": "telok-kurau-primary-school"
+  },
+  {
+    "name": "Temasek Primary School",
+    "slug": "temasek-primary-school"
+  },
+  {
+    "name": "Townsville Primary School",
+    "slug": "townsville-primary-school"
+  },
+  {
+    "name": "Unity Primary School",
+    "slug": "unity-primary-school"
+  },
+  {
+    "name": "Valour Primary School",
+    "slug": "valour-primary-school"
+  },
+  {
+    "name": "Waterway Primary School",
+    "slug": "waterway-primary-school"
+  },
+  {
+    "name": "Wellington Primary School",
+    "slug": "wellington-primary-school"
+  },
+  {
+    "name": "West Grove Primary School",
+    "slug": "west-grove-primary-school"
+  },
+  {
+    "name": "West Spring Primary School",
+    "slug": "west-spring-primary-school"
+  },
+  {
+    "name": "West View Primary School",
+    "slug": "west-view-primary-school"
+  },
+  {
+    "name": "Westwood Primary School",
+    "slug": "westwood-primary-school"
+  },
+  {
+    "name": "White Sands Primary School",
+    "slug": "white-sands-primary-school"
+  },
+  {
+    "name": "Woodgrove Primary School",
+    "slug": "woodgrove-primary-school"
+  },
+  {
+    "name": "Woodlands Primary School",
+    "slug": "woodlands-primary-school"
+  },
+  {
+    "name": "Woodlands Ring Primary School",
+    "slug": "woodlands-ring-primary-school"
+  },
+  {
+    "name": "Xinghua Primary School",
+    "slug": "xinghua-primary-school"
+  },
+  {
+    "name": "Xingnan Primary School",
+    "slug": "xingnan-primary-school"
+  },
+  {
+    "name": "Xinmin Primary School",
+    "slug": "xinmin-primary-school"
+  },
+  {
+    "name": "Xishan Primary School",
+    "slug": "xishan-primary-school"
+  },
+  {
+    "name": "Yangzheng Primary School",
+    "slug": "yangzheng-primary-school"
+  },
+  {
+    "name": "Yew Tee Primary School",
+    "slug": "yew-tee-primary-school"
+  },
+  {
+    "name": "Yio Chu Kang Primary School",
+    "slug": "yio-chu-kang-primary-school"
+  },
+  {
+    "name": "Yishun Primary School",
+    "slug": "yishun-primary-school"
+  },
+  {
+    "name": "Yu Neng Primary School",
+    "slug": "yu-neng-primary-school"
+  },
+  {
+    "name": "Yuhua Primary School",
+    "slug": "yuhua-primary-school"
+  },
+  {
+    "name": "Yumin Primary School",
+    "slug": "yumin-primary-school"
+  },
+  {
+    "name": "Zhangde Primary School",
+    "slug": "zhangde-primary-school"
+  },
+  {
+    "name": "Zhenghua Primary School",
+    "slug": "zhenghua-primary-school"
+  },
+  {
+    "name": "Zhonghua Primary School",
+    "slug": "zhonghua-primary-school"
+  }
+]

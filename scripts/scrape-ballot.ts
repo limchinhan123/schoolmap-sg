@@ -31,9 +31,18 @@ import { chromium } from 'playwright'
 import fs from 'fs'
 import path from 'path'
 
-const YEARS = [2024, 2023, 2022]
+// Years can be passed as CLI arg, e.g. `npx tsx scripts/scrape-ballot.ts 2025`
+// (comma-separated for multiple). Custom-year runs write to a separate file so
+// the committed 2022–24 raw snapshot isn't overwritten.
+const YEARS = process.argv[2]
+  ? process.argv[2].split(',').map(y => parseInt(y.trim(), 10))
+  : [2024, 2023, 2022]
 const BASE_URL = 'https://sgschooling.com/year'
-const OUTPUT_PATH = path.resolve('scripts/schools_ballot_raw.json')
+const OUTPUT_PATH = path.resolve(
+  process.argv[2]
+    ? `scripts/schools_ballot_${YEARS.join('-')}.json`
+    : 'scripts/schools_ballot_raw.json'
+)
 
 // Column indices in the table
 const COL_2C   = 4
@@ -95,12 +104,15 @@ function extractBallotType(cell: string): { ballot_type: BallotType; ballot_held
 async function scrapeYear(year: number): Promise<BallotRecord[]> {
   const records: BallotRecord[] = []
   const browser = await chromium.launch({ headless: true })
+  try {
   const page = await browser.newPage()
 
   const url = `${BASE_URL}/${year}/all`
   console.log(`\nScraping ${url}`)
-  await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 })
-  await page.waitForSelector('table tbody tr', { timeout: 15000 })
+  // 'networkidle' never settles (third-party scripts hold connections open);
+  // the table selector below is the real readiness signal.
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 })
+  await page.waitForSelector('table tbody tr', { timeout: 30000 })
 
   // Grab every row in the table
   const rows = await page.locator('table').first().locator('tbody tr').all()
@@ -184,9 +196,11 @@ async function scrapeYear(year: number): Promise<BallotRecord[]> {
     }
   }
 
-  await browser.close()
   console.log(`  Scraped ${records.length} school records for ${year}`)
   return records
+  } finally {
+    await browser.close()
+  }
 }
 
 async function main() {
